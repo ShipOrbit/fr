@@ -6,6 +6,7 @@ import {
 } from "../contexts/app-context";
 import { authApi, handleApiError } from "../services/api";
 import type { User, LoginData, AuthResponse } from "../types";
+import { AxiosError } from "axios";
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -54,8 +55,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       return { success: true, message: response.message };
     } catch (error) {
-      const apiError = handleApiError(error);
-      return { success: false, message: apiError.message };
+      if (error instanceof AxiosError) {
+        const apiError = handleApiError(error);
+        return { success: false, message: apiError.message };
+      }
+      return { success: false, message: "Something Went Wrong, Try Again." };
     }
   };
 
