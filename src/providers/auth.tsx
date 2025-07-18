@@ -1,12 +1,11 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
-  type AuthProviderProps,
   AuthContext,
   type AuthContextType,
+  type AuthProviderProps,
 } from "../contexts/app-context";
-import { authApi, handleApiError } from "../services/api";
-import type { User, LoginData, AuthResponse } from "../types";
-import { AxiosError } from "axios";
+import { authApi } from "../services/api";
+import type { AuthResponse, User } from "../types";
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -42,25 +41,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const login = async (
-    data: LoginData
+    response: AuthResponse
   ): Promise<{ success: boolean; message: string }> => {
-    try {
-      const response: AuthResponse = await authApi.login(data);
+    setToken(response.token);
+    setUser(response.user);
 
-      setToken(response.token);
-      setUser(response.user);
+    localStorage.setItem("token", response.token);
+    localStorage.setItem("user", JSON.stringify(response.user));
 
-      localStorage.setItem("token", response.token);
-      localStorage.setItem("user", JSON.stringify(response.user));
-
-      return { success: true, message: response.message };
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        const apiError = handleApiError(error);
-        return { success: false, message: apiError.message };
-      }
-      return { success: false, message: "Something Went Wrong, Try Again." };
-    }
+    return { success: true, message: response.message };
   };
 
   const logout = () => {
