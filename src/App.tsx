@@ -11,6 +11,7 @@ import CarriersLanding from "./pages/carriers";
 import SupportLanding from "./pages/support";
 import AboutPage from "./pages/about";
 import ShipmentDetails from "./pages/shippers/shipment-details";
+import SelectDatePage from "./pages/shippers/create-shipment/select-dates";
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
   {
     path: "/shipment-details",
     element: <ShipmentDetails />,
+  },
+  {
+    path: "/select-date",
+    element: <SelectDatePage />,
   },
   {
     path: "/shippers",
