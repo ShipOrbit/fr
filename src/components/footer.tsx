@@ -6,7 +6,7 @@ const Footer = () => (
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
         <div className="col-span-1 md:col-span-2">
           <div className="flex items-center mb-4">
-            <div className="bg-slate-600 rounded-full p-2 mr-3">
+            <div className="bg-blue-600 rounded-full p-2 mr-3">
               <Package className="h-6 w-6 text-white" />
             </div>
             <span className="text-xl font-bold">ShipOrbit</span>
