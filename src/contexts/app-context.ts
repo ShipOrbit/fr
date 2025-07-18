@@ -1,10 +1,10 @@
 import { createContext, type ReactNode } from "react";
-import type { LoginData, User } from "../types";
+import type { AuthResponse, User } from "../types";
 
 export interface AuthContextType {
   user: User | null;
   token: string | null;
-  login: (data: LoginData) => Promise<{ success: boolean; message: string }>;
+  login: (data: AuthResponse) => Promise<{ success: boolean; message: string }>;
   logout: () => void;
   isLoading: boolean;
   isAuthenticated: boolean;
