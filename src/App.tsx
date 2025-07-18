@@ -10,6 +10,7 @@ import ShippersLanding from "./pages/shippers";
 import CarriersLanding from "./pages/carriers";
 import SupportLanding from "./pages/support";
 import AboutPage from "./pages/about";
+import ShipmentDetails from "./pages/shippers/shipment-details";
 
 const router = createBrowserRouter([
   {
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: <ShipperDashboard />,
+  },
+  {
+    path: "/shipment-details",
+    element: <ShipmentDetails />,
   },
   {
     path: "/shippers",
