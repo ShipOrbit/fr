@@ -50,11 +50,11 @@ export interface AuthResponse {
   message: string;
 }
 export interface ApiError {
-  message: string;
+  message: string | string[];
   errors?: Record<string, string[]>;
 }
 export interface FormErrors {
-  [key: string]: string;
+  [key: string]: string | string[];
 }
 export interface RegistrationState {
   step: number;
