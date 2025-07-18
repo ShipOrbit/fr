@@ -40,7 +40,7 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-      window.location.href = "/sign-in";
+      window.location.href = "/login";
     }
     return Promise.reject(error);
   }
@@ -50,13 +50,10 @@ api.interceptors.response.use(
 export const authApi = {
   // Register step 1
   registerStepOne: async (data: RegisterStepOneData) => {
-    const response: AxiosResponse<{
-      message: string;
-      user_id: string;
-      email: string;
-      first_name: string;
-      company_name: string;
-    }> = await api.post("/auth/register/step-1/", data);
+    const response: AxiosResponse = await api.post(
+      "/auth/register/step-1/",
+      data
+    );
     return response.data;
   },
 
@@ -132,11 +129,13 @@ export const authApi = {
 };
 
 // Error handling utility
-export const handleApiError = (error: AxiosError<ApiError>): ApiError => {
+export const handleApiError = (
+  error: AxiosError<ApiError["errors"]>
+): ApiError => {
   if (error.response?.data) {
     return {
-      message: error.response.data.message || "An error occurred",
-      errors: error.response.data.errors || {},
+      message: error.response.data.non_field_errors || "An error occurred",
+      errors: error.response.data || {},
     };
   }
   return {
