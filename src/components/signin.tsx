@@ -2,8 +2,10 @@ import { Loader2, Lock, Mail, Package } from "lucide-react";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/use-auth";
-import type { FormErrors, LoginData } from "../types";
+import type { AuthResponse, FormErrors, LoginData } from "../types";
 import Layout from "./layout";
+import { authApi, handleApiError } from "../services/api";
+import { AxiosError } from "axios";
 
 const SignIn: React.FC = () => {
   const navigate = useNavigate();
@@ -50,15 +52,24 @@ const SignIn: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const result = await login(formData);
+      const response: AuthResponse = await authApi.login(formData);
+
+      const result = await login(response);
 
       if (result.success) {
         navigate("/dashboard");
       } else {
         setErrors({ general: result.message });
       }
-    } catch {
-      setErrors({ general: "An unexpected error occurred. Please try again." });
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        const apiError = handleApiError(error);
+        setErrors({ general: apiError.message });
+      } else {
+        setErrors({
+          general: "An unexpected error occurred. Please try again.",
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -70,7 +81,7 @@ const SignIn: React.FC = () => {
         <div className="max-w-md w-full space-y-8">
           <div className="text-center">
             <div className="flex justify-center">
-              <Package className="h-12 w-12 text-slate-600" />
+              <Package className="h-12 w-12 text-blue-600" />
             </div>
             <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
               Sign in to ShipOrbit
@@ -79,7 +90,7 @@ const SignIn: React.FC = () => {
               Don't have an account?{" "}
               <Link
                 to="/sign-up"
-                className="font-medium text-slate-600 hover:text-slate-500"
+                className="font-medium text-blue-600 hover:text-blue-500"
               >
                 Sign up here
               </Link>
@@ -113,7 +124,7 @@ const SignIn: React.FC = () => {
                     onChange={handleChange}
                     className={`block w-full pl-10 pr-3 py-2 border ${
                       errors.email ? "border-red-300" : "border-gray-300"
-                    } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-slate-500 focus:border-slate-500`}
+                    } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
                     placeholder="Enter your email"
                   />
                 </div>
@@ -141,7 +152,7 @@ const SignIn: React.FC = () => {
                     onChange={handleChange}
                     className={`block w-full pl-10 pr-3 py-2 border ${
                       errors.password ? "border-red-300" : "border-gray-300"
-                    } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-slate-500 focus:border-slate-500`}
+                    } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
                     placeholder="Enter your password"
                   />
                 </div>
@@ -154,7 +165,7 @@ const SignIn: React.FC = () => {
                 <div className="text-sm">
                   <Link
                     to="/reset-password"
-                    className="font-medium text-slate-600 hover:text-slate-500"
+                    className="font-medium text-blue-600 hover:text-blue-500"
                   >
                     Forgot your password?
                   </Link>
@@ -164,7 +175,7 @@ const SignIn: React.FC = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-slate-600 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               >
                 {isLoading ? (
                   <>
