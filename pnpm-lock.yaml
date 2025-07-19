@@ -39,6 +39,9 @@ importers:
       '@eslint/js':
         specifier: ^9.30.1
         version: 9.31.0
+      '@types/country-list':
+        specifier: ^2.1.4
+        version: 2.1.4
       '@types/react':
         specifier: ^19.1.8
         version: 19.1.8
@@ -621,6 +624,9 @@ packages:
 
   '@types/babel__traverse@7.20.7':
     resolution: {integrity: sha512-dkO5fhS7+/oos4ciWxyEyjWe48zmG6wbCheo/G2ZnHx4fs3EU6YC6UM8rk56gAjNJ9P3MTH2jo5jb92/K6wbng==}
+
+  '@types/country-list@2.1.4':
+    resolution: {integrity: sha512-c4orjm0wT+BRt6Ynf2/QRRL+iMX4SdLT11jAjKqkJ7mQr/DLOmdz7qR8i04j9Y7wFSoP70cXJc18FN4YGNgGaA==}
 
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
@@ -1915,6 +1921,8 @@ snapshots:
   '@types/babel__traverse@7.20.7':
     dependencies:
       '@babel/types': 7.28.1
+
+  '@types/country-list@2.1.4': {}
 
   '@types/estree@1.0.8': {}
 
