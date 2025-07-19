@@ -44,7 +44,7 @@ const router = createBrowserRouter([
     element: <ShipmentDetails />,
   },
   {
-    path: "/select-date",
+    path: "/create-shipment",
     element: <SelectDatePage />,
   },
   {
