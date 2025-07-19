@@ -100,16 +100,6 @@ const SignUpStep2: React.FC = () => {
     <Layout>
       <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-8">
-            <Truck className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-            <h1 className="text-3xl font-extrabold text-gray-900">
-              Join ShipOrbit
-            </h1>
-            <p className="mt-2 text-gray-600">
-              Tell us about your shipping needs
-            </p>
-          </div>
-
           <div className="bg-white shadow-lg rounded-lg overflow-hidden">
             <div className="lg:flex">
               {/* Left side - Progress and Form */}
@@ -335,13 +325,73 @@ const SignUpStep2: React.FC = () => {
               </div>
 
               {/* Right side - Image */}
-              <div className="lg:w-1/3 bg-gradient-to-br from-blue-600 to-indigo-700">
-                <div className="h-full flex items-center justify-center p-8">
-                  <img
-                    src="https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                    alt="Shipping containers"
-                    className="rounded-lg shadow-lg"
-                  />
+              <div className="lg:w-1/2 bg-gradient-to-br from-blue-600 to-indigo-700 p-8 text-white">
+                <div className="h-full flex flex-col">
+                  <div className="text-center mb-8">
+                    <Package className="h-12 w-12 text-white mx-auto mb-4" />
+                    <h1 className="text-3xl font-extrabold text-white">
+                      Join ShipOrbit
+                    </h1>
+                    <p className="mt-2 text-white">
+                      Tell us about your shipping needs
+                    </p>
+                  </div>
+                  <div className="mb-8">
+                    <img
+                      src="https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                      alt="Logistics Dashboard"
+                      className="rounded-lg shadow-lg mb-6"
+                    />
+                  </div>
+
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="text-lg font-semibold mb-2">We offer</h3>
+                      <p className="text-xl font-bold">
+                        Easy and reliable shipping.
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-4">
+                      <div className="flex items-start space-x-3">
+                        <span className="text-blue-300 font-mono text-sm">
+                          01.
+                        </span>
+                        <div>
+                          <h4 className="font-semibold">
+                            Business at a glance
+                          </h4>
+                          <p className="text-blue-100 text-sm">
+                            Monitor your shipments in real-time
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start space-x-3">
+                        <span className="text-blue-300 font-mono text-sm">
+                          02.
+                        </span>
+                        <div>
+                          <h4 className="font-semibold">Pick your price</h4>
+                          <p className="text-blue-100 text-sm">
+                            Competitive rates for all your needs
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start space-x-3">
+                        <span className="text-blue-300 font-mono text-sm">
+                          03.
+                        </span>
+                        <div>
+                          <h4 className="font-semibold">Ship your way 24/7</h4>
+                          <p className="text-blue-100 text-sm">
+                            Round-the-clock support and tracking
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
