@@ -26,7 +26,7 @@ export const signUpSchema = z.object({
   primary_ships_country: z.string().min(1, "Please select a country"),
 });
 
-export const shipmentNeedsSchema = z.object({
+export const shippingNeedsSchema = z.object({
   company_location: z.string().min(1, "Please select a company location"),
   mode: z.array(z.string()).min(1, "Please select at least one mode type"),
   average_ftl: z.string().min(1, "Please select average FTL shipment volume"),
