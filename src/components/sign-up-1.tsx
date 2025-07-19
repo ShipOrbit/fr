@@ -340,21 +340,6 @@ const SignUpStep1: React.FC = () => {
 
                   <div className="space-y-3">
                     <p className="text-xs text-gray-500">
-                      We currently focus on shipments within the continental
-                      United States.
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      This site is protected by reCAPTCHA and the Google{" "}
-                      <a href="#" className="text-blue-600 hover:text-blue-500">
-                        Privacy Policy
-                      </a>{" "}
-                      and{" "}
-                      <a href="#" className="text-blue-600 hover:text-blue-500">
-                        Terms of Service
-                      </a>{" "}
-                      apply.
-                    </p>
-                    <p className="text-xs text-gray-500">
                       By clicking Sign up, you confirm that you have read and
                       agreed to{" "}
                       <a href="#" className="text-blue-600 hover:text-blue-500">
