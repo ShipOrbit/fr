@@ -1,98 +1,175 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
-import { CheckCircle, Loader2, MapPin, Package } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import { CheckCircle, Loader2, MapPin, Package, Search } from "lucide-react";
+import React, { useCallback, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { z } from "zod";
 import { useAuth } from "../hooks/use-auth";
 import { authApi, handleApiError } from "../services/api";
-import type { FormErrors, RegisterStepTwoData } from "../types";
 import Layout from "./layout";
+
+// GeoDB Cities API types
+interface GeoDBCity {
+  id: 489;
+  wikiDataId: string;
+  name: string;
+  countryCode: string;
+  fipsCode: string;
+  isoCode: string;
+  type: string;
+}
+
+interface GeoDBResponse {
+  data: GeoDBCity[];
+}
+
+// Zod schema for form validation
+const signUpStep2Schema = z.object({
+  company_location: z.string().min(1, "Please select a company location"),
+  mode: z.array(z.string()).min(1, "Please select at least one mode type"),
+  average_ftl: z.string().min(1, "Please select average FTL shipment volume"),
+  trailer_type: z
+    .array(z.string())
+    .min(1, "Please select at least one trailer type"),
+  user_id: z.number().optional(),
+});
+
+type SignUpStep2FormData = z.infer<typeof signUpStep2Schema>;
 
 const SignUpStep2: React.FC = () => {
   const navigate = useNavigate();
-  const [firstName, setFirstName] = useState("");
-  const [companyName, setCompanyName] = useState("");
   const { user } = useAuth();
+  const [cities, setCities] = useState<GeoDBCity[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isLoadingCities, setIsLoadingCities] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
 
-  const [formData, setFormData] = useState<RegisterStepTwoData>({
-    company_location: "MISSOURI",
-    mode: [],
-    average_ftl: "1-5",
-    trailer_type: [],
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors, isSubmitting },
+    setError,
+    clearErrors,
+  } = useForm<SignUpStep2FormData>({
+    resolver: zodResolver(signUpStep2Schema),
+    defaultValues: {
+      company_location: "",
+      mode: [],
+      average_ftl: "1-5",
+      trailer_type: [],
+      user_id: undefined,
+    },
   });
 
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [isLoading, setIsLoading] = useState(false);
+  const watchedMode = watch("mode");
+  const watchedTrailerType = watch("trailer_type");
 
+  // GeoDB Cities API configuration
+  const GEODB_API_KEY = "8adb5dec7fmshc8dcc0190d19f80p110991jsn0d192adfe2ee";
+  const GEODB_BASE_URL = "https://wft-geo-db.p.rapidapi.com/v1/geo";
+
+  // Search for cities using GeoDB API
+  const searchCities = useCallback(
+    async (query: string) => {
+      if (!query.trim() || query.length < 2) {
+        setCities([]);
+        return;
+      }
+
+      setIsLoadingCities(true);
+      try {
+        const response = await fetch(
+          `${GEODB_BASE_URL}/countries/${user?.company?.primary_ships_country}/regions?namePrefix=${searchTerm}`,
+          {
+            headers: {
+              "X-RapidAPI-Key": GEODB_API_KEY || "",
+              "X-RapidAPI-Host": "wft-geo-db.p.rapidapi.com",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch cities");
+        }
+
+        const data: GeoDBResponse = await response.json();
+        setCities(data.data || []);
+      } catch (error) {
+        console.error("Error fetching cities:", error);
+        setCities([]);
+      } finally {
+        setIsLoadingCities(false);
+      }
+    },
+    [searchTerm, user?.company?.primary_ships_country]
+  );
+
+  // Debounced search effect
   useEffect(() => {
-    if (!user) {
-      navigate("/sign-up");
-      return;
-    }
+    const debounceTimer = setTimeout(() => {
+      if (searchTerm) {
+        searchCities(searchTerm);
+      } else {
+        setCities([]);
+      }
+    }, 3000);
 
-    setFirstName(user.first_name);
-    setCompanyName(user.company?.name || "");
-    setFormData((prev) => ({ ...prev, user_id: user.id }));
-  }, [user, navigate]);
+    return () => clearTimeout(debounceTimer);
+  }, [searchCities, searchTerm]);
+
+  const handleLocationSelect = (city: GeoDBCity) => {
+    const locationValue = `${city.name}, ${city.countryCode}`;
+    setValue("company_location", locationValue);
+    setSearchTerm(locationValue);
+    setShowDropdown(false);
+    setCities([]);
+    clearErrors("company_location");
+  };
 
   const handleCheckboxChange = (
     name: "mode" | "trailer_type",
-    value: string
+    value: string,
+    checked: boolean
   ) => {
-    setFormData((prev) => ({
-      ...prev,
-      [name]: prev[name].includes(value)
-        ? prev[name].filter((item) => item !== value)
-        : [...prev[name], value],
-    }));
+    const currentValues = name === "mode" ? watchedMode : watchedTrailerType;
+    const newValues = checked
+      ? [...currentValues, value]
+      : currentValues.filter((item) => item !== value);
 
-    // Clear error when user makes selection
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
-    }
+    setValue(name, newValues);
+    clearErrors(name);
   };
 
-  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
-
-    if (formData.mode.length === 0) {
-      newErrors.mode = "Please select at least one mode type";
-    }
-
-    if (formData.trailer_type.length === 0) {
-      newErrors.trailer_type = "Please select at least one trailer type";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!validateForm()) return;
-
-    setIsLoading(true);
-
+  const onSubmit = async (data: SignUpStep2FormData) => {
     try {
-      await authApi.registerStepTwo(formData);
-
+      clearErrors("root");
+      await authApi.registerStepTwo(data);
       navigate("/sign-up-3");
     } catch (error) {
       if (error instanceof AxiosError) {
         const apiError = handleApiError(error);
         if (apiError.errors) {
-          setErrors(apiError.errors);
+          Object.entries(apiError.errors).forEach(([field, message]) => {
+            setError(field as keyof SignUpStep2FormData, {
+              type: "server",
+              message: message as unknown as string,
+            });
+          });
         } else {
-          setErrors({ general: apiError.message });
+          setError("root", {
+            type: "server",
+            message: apiError.message,
+          });
         }
+      } else {
+        setError("root", {
+          type: "server",
+          message: "An unexpected error occurred. Please try again.",
+        });
       }
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -142,22 +219,23 @@ const SignUpStep2: React.FC = () => {
 
                 <div className="mb-6">
                   <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                    Nice to meet you, {firstName}
+                    Nice to meet you, {user?.first_name}
                   </h2>
                   <p className="text-gray-600">
-                    Tell us about {companyName}'s shipping needs. Right now, we
-                    focus on 53' dry van and reefer full truckloads.
+                    Tell us about {user?.company?.name}'s shipping needs. Right
+                    now, we focus on 53' dry van and reefer full truckloads.
                   </p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  {errors.general && (
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                  {errors.root && (
                     <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
-                      {errors.general}
+                      {errors.root.message}
                     </div>
                   )}
 
-                  <div>
+                  {/* Company Location with GeoDB Search */}
+                  <div className="relative">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Company location
                     </label>
@@ -165,63 +243,105 @@ const SignUpStep2: React.FC = () => {
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <MapPin className="h-5 w-5 text-gray-400" />
                       </div>
-                      <select
-                        name="company_location"
-                        value={formData.company_location}
-                        onChange={handleSelectChange}
-                        className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                      >
-                        <option value="MISSOURI">Missouri</option>
-                        <option value="CALIFORNIA">California</option>
-                        <option value="TEXAS">Texas</option>
-                        <option value="FLORIDA">Florida</option>
-                        <option value="NEW_YORK">New York</option>
-                        <option value="ILLINOIS">Illinois</option>
-                      </select>
+                      <input
+                        type="text"
+                        value={searchTerm}
+                        onChange={(e) => {
+                          setSearchTerm(e.target.value);
+                          setShowDropdown(true);
+                          if (!e.target.value.trim()) {
+                            setValue("company_location", "");
+                          }
+                        }}
+                        onFocus={() => setShowDropdown(true)}
+                        className={`block w-full pl-10 pr-10 py-2 border ${
+                          errors.company_location
+                            ? "border-red-300"
+                            : "border-gray-300"
+                        } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
+                        placeholder="Search for your city..."
+                      />
+                      <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                        {isLoadingCities ? (
+                          <Loader2 className="h-4 w-4 text-gray-400 animate-spin" />
+                        ) : (
+                          <Search className="h-4 w-4 text-gray-400" />
+                        )}
+                      </div>
                     </div>
+
+                    {/* Dropdown for city suggestions */}
+                    {showDropdown && cities.length > 0 && (
+                      <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                        {cities.map((city) => (
+                          <button
+                            key={city.id}
+                            type="button"
+                            onClick={() => handleLocationSelect(city)}
+                            className="w-full px-4 py-2 text-left hover:bg-gray-50 focus:bg-gray-50 focus:outline-none"
+                          >
+                            <div className="font-medium text-gray-900">
+                              {city.name}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {city.name}, {city.countryCode}
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    {errors.company_location && (
+                      <p className="mt-1 text-sm text-red-600">
+                        {errors.company_location.message}
+                      </p>
+                    )}
                   </div>
 
+                  {/* Mode Type */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-3">
                       Mode type (Select all that apply)
                     </label>
                     <div className="space-y-3">
-                      <div className="flex items-center">
-                        <input
-                          type="checkbox"
-                          id="FTL"
-                          checked={formData.mode.includes("FTL")}
-                          onChange={() => handleCheckboxChange("mode", "FTL")}
-                          className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                        />
-                        <label
-                          htmlFor="FTL"
-                          className="ml-3 text-sm text-gray-700"
-                        >
-                          53' Full truckloads (FTL)
-                        </label>
-                      </div>
-                      <div className="flex items-center">
-                        <input
-                          type="checkbox"
-                          id="LTL"
-                          checked={formData.mode.includes("LTL")}
-                          onChange={() => handleCheckboxChange("mode", "LTL")}
-                          className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                        />
-                        <label
-                          htmlFor="LTL"
-                          className="ml-3 text-sm text-gray-700"
-                        >
-                          53' Less-than-truckloads (LTL)
-                        </label>
-                      </div>
+                      {[
+                        { value: "FTL", label: "53' Full truckloads (FTL)" },
+                        {
+                          value: "LTL",
+                          label: "53' Less-than-truckloads (LTL)",
+                        },
+                      ].map((option) => (
+                        <div key={option.value} className="flex items-center">
+                          <input
+                            type="checkbox"
+                            id={option.value}
+                            checked={watchedMode.includes(option.value)}
+                            onChange={(e) =>
+                              handleCheckboxChange(
+                                "mode",
+                                option.value,
+                                e.target.checked
+                              )
+                            }
+                            className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                          />
+                          <label
+                            htmlFor={option.value}
+                            className="ml-3 text-sm text-gray-700"
+                          >
+                            {option.label}
+                          </label>
+                        </div>
+                      ))}
                     </div>
                     {errors.mode && (
-                      <p className="mt-1 text-sm text-red-600">{errors.mode}</p>
+                      <p className="mt-1 text-sm text-red-600">
+                        {errors.mode.message}
+                      </p>
                     )}
                   </div>
 
+                  {/* Average FTL */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Average FTL shipment volume per month
@@ -231,9 +351,7 @@ const SignUpStep2: React.FC = () => {
                         <Package className="h-5 w-5 text-gray-400" />
                       </div>
                       <select
-                        name="average_ftl"
-                        value={formData.average_ftl}
-                        onChange={handleSelectChange}
+                        {...register("average_ftl")}
                         className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                       >
                         <option value="1-5">1-5</option>
@@ -244,78 +362,60 @@ const SignUpStep2: React.FC = () => {
                         <option value="80-100">80-100</option>
                       </select>
                     </div>
+                    {errors.average_ftl && (
+                      <p className="mt-1 text-sm text-red-600">
+                        {errors.average_ftl.message}
+                      </p>
+                    )}
                   </div>
 
+                  {/* Trailer Type */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-3">
                       Trailer type (Select all that apply)
                     </label>
                     <div className="space-y-3">
-                      <div className="flex items-center">
-                        <input
-                          type="checkbox"
-                          id="dryVan"
-                          checked={formData.trailer_type.includes("dryVan")}
-                          onChange={() =>
-                            handleCheckboxChange("trailer_type", "dryVan")
-                          }
-                          className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                        />
-                        <label
-                          htmlFor="dryVan"
-                          className="ml-3 text-sm text-gray-700"
-                        >
-                          53' Dry van
-                        </label>
-                      </div>
-                      <div className="flex items-center">
-                        <input
-                          type="checkbox"
-                          id="reefer"
-                          checked={formData.trailer_type.includes("reefer")}
-                          onChange={() =>
-                            handleCheckboxChange("trailer_type", "reefer")
-                          }
-                          className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                        />
-                        <label
-                          htmlFor="reefer"
-                          className="ml-3 text-sm text-gray-700"
-                        >
-                          53' Reefer
-                        </label>
-                      </div>
-                      <div className="flex items-center">
-                        <input
-                          type="checkbox"
-                          id="flatbed"
-                          checked={formData.trailer_type.includes("flatbed")}
-                          onChange={() =>
-                            handleCheckboxChange("trailer_type", "flatbed")
-                          }
-                          className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                        />
-                        <label
-                          htmlFor="flatbed"
-                          className="ml-3 text-sm text-gray-700"
-                        >
-                          Flatbed
-                        </label>
-                      </div>
+                      {[
+                        { value: "dryVan", label: "53' Dry van" },
+                        { value: "reefer", label: "53' Reefer" },
+                        { value: "flatbed", label: "Flatbed" },
+                      ].map((option) => (
+                        <div key={option.value} className="flex items-center">
+                          <input
+                            type="checkbox"
+                            id={option.value}
+                            checked={watchedTrailerType.includes(option.value)}
+                            onChange={(e) =>
+                              handleCheckboxChange(
+                                "trailer_type",
+                                option.value,
+                                e.target.checked
+                              )
+                            }
+                            className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                          />
+                          <label
+                            htmlFor={option.value}
+                            className="ml-3 text-sm text-gray-700"
+                          >
+                            {option.label}
+                          </label>
+                        </div>
+                      ))}
                     </div>
                     {errors.trailer_type && (
                       <p className="mt-1 text-sm text-red-600">
-                        {errors.trailer_type}
+                        {errors.trailer_type.message}
                       </p>
                     )}
                   </div>
 
                   <button
                     type="submit"
-                    disabled={isLoading}
+                    disabled={isSubmitting}
                     className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                   >
-                    {isLoading ? (
+                    {isSubmitting ? (
                       <Loader2 className="h-5 w-5 animate-spin" />
                     ) : (
                       "Get started"
