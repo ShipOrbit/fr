@@ -5,35 +5,28 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
-import { useAuth } from "../../../hooks/use-auth";
-import { authApi, handleApiError } from "../../../services/api";
 import Layout from "../../../components/layout";
-import { shipmentNeedsSchema } from "./schema";
+import { useAuth } from "../../../hooks/use-auth";
+import { handleApiError } from "../../../services/api/auth";
+import { shipperApi } from "../../../services/api/shipper";
+import type { GeoDBCity } from "../../../types";
+import { shippingNeedsSchema } from "./schema";
 
-// GeoDB Cities API types
-interface GeoDBCity {
-  id: 489;
-  wikiDataId: string;
-  name: string;
-  countryCode: string;
-  fipsCode: string;
-  isoCode: string;
-  type: string;
-}
+type ShippingNeedsFormData = z.infer<typeof shippingNeedsSchema>;
 
-interface GeoDBResponse {
-  data: GeoDBCity[];
-}
-
-type ShipmentNeedsFormData = z.infer<typeof shipmentNeedsSchema>;
-
-const ShipmentNeeds: React.FC = () => {
+const ShippingNeeds: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [cities, setCities] = useState<GeoDBCity[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoadingCities, setIsLoadingCities] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+
+  useEffect(() => {
+    if (user?.shipping_needs) {
+      navigate("/sign-up-3");
+    }
+  }, [navigate, user]);
 
   const {
     register,
@@ -43,8 +36,8 @@ const ShipmentNeeds: React.FC = () => {
     formState: { errors, isSubmitting },
     setError,
     clearErrors,
-  } = useForm<ShipmentNeedsFormData>({
-    resolver: zodResolver(shipmentNeedsSchema),
+  } = useForm<ShippingNeedsFormData>({
+    resolver: zodResolver(shippingNeedsSchema),
     defaultValues: {
       company_location: "",
       mode: [],
@@ -57,10 +50,6 @@ const ShipmentNeeds: React.FC = () => {
   const watchedMode = watch("mode");
   const watchedTrailerType = watch("trailer_type");
 
-  // GeoDB Cities API configuration
-  const GEODB_API_KEY = "8adb5dec7fmshc8dcc0190d19f80p110991jsn0d192adfe2ee";
-  const GEODB_BASE_URL = "https://wft-geo-db.p.rapidapi.com/v1/geo";
-
   // Search for cities using GeoDB API
   const searchCities = useCallback(
     async (query: string) => {
@@ -71,22 +60,11 @@ const ShipmentNeeds: React.FC = () => {
 
       setIsLoadingCities(true);
       try {
-        const response = await fetch(
-          `${GEODB_BASE_URL}/countries/${user?.company?.primary_ships_country}/regions?namePrefix=${searchTerm}`,
-          {
-            headers: {
-              "X-RapidAPI-Key": GEODB_API_KEY || "",
-              "X-RapidAPI-Host": "wft-geo-db.p.rapidapi.com",
-            },
-          }
-        );
+        const response = await shipperApi.getCountryRegions({
+          search_Term: searchTerm,
+        });
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch cities");
-        }
-
-        const data: GeoDBResponse = await response.json();
-        setCities(data.data || []);
+        setCities(response || []);
       } catch (error) {
         console.error("Error fetching cities:", error);
         setCities([]);
@@ -94,7 +72,7 @@ const ShipmentNeeds: React.FC = () => {
         setIsLoadingCities(false);
       }
     },
-    [searchTerm, user?.company?.primary_ships_country]
+    [searchTerm]
   );
 
   // Debounced search effect
@@ -105,7 +83,7 @@ const ShipmentNeeds: React.FC = () => {
       } else {
         setCities([]);
       }
-    }, 3000);
+    }, 1000);
 
     return () => clearTimeout(debounceTimer);
   }, [searchCities, searchTerm]);
@@ -133,17 +111,17 @@ const ShipmentNeeds: React.FC = () => {
     clearErrors(name);
   };
 
-  const onSubmit = async (data: ShipmentNeedsFormData) => {
+  const onSubmit = async (data: ShippingNeedsFormData) => {
     try {
       clearErrors("root");
-      await authApi.registerStepTwo(data);
+      await shipperApi.createShippingNeeds(data);
       navigate("/sign-up-3");
     } catch (error) {
       if (error instanceof AxiosError) {
         const apiError = handleApiError(error);
         if (apiError.errors) {
           Object.entries(apiError.errors).forEach(([field, message]) => {
-            setError(field as keyof ShipmentNeedsFormData, {
+            setError(field as keyof ShippingNeedsFormData, {
               type: "server",
               message: message as unknown as string,
             });
@@ -492,4 +470,4 @@ const ShipmentNeeds: React.FC = () => {
   );
 };
 
-export default ShipmentNeeds;
+export default ShippingNeeds;
