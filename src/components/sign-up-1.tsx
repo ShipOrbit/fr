@@ -1,20 +1,20 @@
+import { AxiosError } from "axios";
+import {
+  Building,
+  Globe,
+  Loader2,
+  Lock,
+  Mail,
+  Package,
+  Phone,
+  User,
+} from "lucide-react";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import type { RegisterStepOneData, FormErrors } from "../types";
-import { authApi, handleApiError } from "../services/api";
-import Layout from "./layout";
-import {
-  Loader2,
-  User,
-  Building,
-  Mail,
-  Phone,
-  Globe,
-  Lock,
-  Truck,
-} from "lucide-react";
-import { AxiosError } from "axios";
 import { useAuth } from "../hooks/use-auth";
+import { authApi, handleApiError } from "../services/api";
+import type { FormErrors, RegisterStepOneData } from "../types";
+import Layout from "./layout";
 
 const SignUpStep1: React.FC = () => {
   const navigate = useNavigate();
