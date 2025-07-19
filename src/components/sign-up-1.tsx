@@ -1,125 +1,111 @@
+import React from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useNavigate, Link } from "react-router-dom";
 import { AxiosError } from "axios";
+import { getData } from "country-list";
 import {
+  User,
   Building,
+  Mail,
+  Phone,
+  Lock,
   Globe,
   Loader2,
-  Lock,
-  Mail,
   Package,
-  Phone,
-  User,
 } from "lucide-react";
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/use-auth";
 import { authApi, handleApiError } from "../services/api";
-import type { FormErrors, RegisterStepOneData } from "../types";
 import Layout from "./layout";
+
+// Get all countries from country-list package
+const countries = getData();
+
+// Zod schema for form validation
+const signUpSchema = z.object({
+  email: z.email("Please enter a valid email address"),
+  first_name: z
+    .string()
+    .min(1, "First name is required")
+    .max(15, "First name must be 15 characters or less")
+    .trim(),
+  last_name: z.string().min(1, "Last name is required").trim(),
+  phone_number: z
+    .string()
+    .min(1, "Phone number is required")
+    .regex(
+      /^\(?(\d{3})\)?[-.\s]?(\d{3})[-.\s]?(\d{4})$/,
+      "Please enter a valid phone number"
+    ),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .regex(
+      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/,
+      "Password must contain at least one uppercase letter, one lowercase letter, and one number"
+    ),
+  company_name: z.string().min(1, "Company name is required").trim(),
+  primary_ships_country: z.string().min(1, "Please select a country"),
+});
+
+type SignUpFormData = z.infer<typeof signUpSchema>;
 
 const SignUpStep1: React.FC = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const [formData, setFormData] = useState<RegisterStepOneData>({
-    email: "",
-    first_name: "",
-    last_name: "",
-    phone_number: "",
-    password: "",
-    company_name: "",
-    primary_ships_country: "US",
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setError,
+    clearErrors,
+  } = useForm<SignUpFormData>({
+    resolver: zodResolver(signUpSchema),
+    defaultValues: {
+      email: "",
+      first_name: "",
+      last_name: "",
+      phone_number: "",
+      password: "",
+      company_name: "",
+      primary_ships_country: "US",
+    },
   });
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
-    }
-  };
-
-  const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
-
-    if (!formData.first_name?.trim()) {
-      newErrors.first_name = "First name is required";
-    } else if (formData.first_name.length > 15) {
-      newErrors.first_name = "First name must be 15 characters or less";
-    }
-
-    if (!formData.last_name?.trim()) {
-      newErrors.last_name = "Last name is required";
-    }
-
-    if (!formData.company_name?.trim()) {
-      newErrors.company_name = "Company name is required";
-    }
-
-    if (!formData.email?.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email address";
-    }
-
-    if (!formData.phone_number?.trim()) {
-      newErrors.phone_number = "Phone number is required";
-    } else if (
-      !/^\(?(\d{3})\)?[-.\s]?(\d{3})[-.\s]?(\d{4})$/.test(formData.phone_number)
-    ) {
-      newErrors.phone_number = "Please enter a valid phone number";
-    }
-
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-    } else if (formData.password.length < 8) {
-      newErrors.password = "Password must be at least 8 characters";
-    } else if (
-      !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/.test(
-        formData.password
-      )
-    ) {
-      newErrors.password =
-        "Password must contain at least one uppercase letter, one lowercase letter, and one number";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!validateForm()) return;
-
-    setIsLoading(true);
-
+  const onSubmit = async (data: SignUpFormData) => {
     try {
-      const response = await authApi.registerStepOne(formData);
+      // Clear any previous general errors
+      clearErrors("root");
 
+      const response = await authApi.registerStepOne(data);
       login(response);
-
       navigate("/sign-up-2");
     } catch (error) {
       if (error instanceof AxiosError) {
         const apiError = handleApiError(error);
         if (apiError.errors) {
-          setErrors(apiError.errors);
+          // Set field-specific errors
+          Object.entries(apiError.errors).forEach(([field, message]) => {
+            setError(field as keyof SignUpFormData, {
+              type: "server",
+              message: message as unknown as string,
+            });
+          });
         } else {
-          setErrors({ general: apiError.message });
+          // Set general error
+          setError("root", {
+            type: "server",
+            message: apiError.message,
+          });
         }
       } else {
-        setErrors({
-          general: "An unexpected error occurred. Please try again.",
+        setError("root", {
+          type: "server",
+          message: "An unexpected error occurred. Please try again.",
         });
       }
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -136,7 +122,7 @@ const SignUpStep1: React.FC = () => {
                     Help keep each other safe
                   </h2>
                   <p className="text-gray-600 text-sm mb-4">
-                    Already have an account?
+                    Already have an account?{" "}
                     <Link
                       to="/login"
                       className="text-blue-600 hover:text-blue-500 font-medium"
@@ -146,10 +132,10 @@ const SignUpStep1: React.FC = () => {
                   </p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  {errors.general && (
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                  {errors.root && (
                     <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
-                      {errors.general}
+                      {errors.root.message}
                     </div>
                   )}
 
@@ -164,9 +150,7 @@ const SignUpStep1: React.FC = () => {
                         </div>
                         <input
                           type="text"
-                          name="first_name"
-                          value={formData.first_name}
-                          onChange={handleChange}
+                          {...register("first_name")}
                           className={`block w-full pl-10 pr-3 py-2 border ${
                             errors.first_name
                               ? "border-red-300"
@@ -177,7 +161,7 @@ const SignUpStep1: React.FC = () => {
                       </div>
                       {errors.first_name && (
                         <p className="mt-1 text-sm text-red-600">
-                          {errors.first_name}
+                          {errors.first_name.message}
                         </p>
                       )}
                     </div>
@@ -192,9 +176,7 @@ const SignUpStep1: React.FC = () => {
                         </div>
                         <input
                           type="text"
-                          name="last_name"
-                          value={formData.last_name}
-                          onChange={handleChange}
+                          {...register("last_name")}
                           className={`block w-full pl-10 pr-3 py-2 border ${
                             errors.last_name
                               ? "border-red-300"
@@ -205,7 +187,7 @@ const SignUpStep1: React.FC = () => {
                       </div>
                       {errors.last_name && (
                         <p className="mt-1 text-sm text-red-600">
-                          {errors.last_name}
+                          {errors.last_name.message}
                         </p>
                       )}
                     </div>
@@ -221,9 +203,7 @@ const SignUpStep1: React.FC = () => {
                       </div>
                       <input
                         type="text"
-                        name="company_name"
-                        value={formData.company_name}
-                        onChange={handleChange}
+                        {...register("company_name")}
                         className={`block w-full pl-10 pr-3 py-2 border ${
                           errors.company_name
                             ? "border-red-300"
@@ -234,7 +214,7 @@ const SignUpStep1: React.FC = () => {
                     </div>
                     {errors.company_name && (
                       <p className="mt-1 text-sm text-red-600">
-                        {errors.company_name}
+                        {errors.company_name.message}
                       </p>
                     )}
                   </div>
@@ -249,9 +229,7 @@ const SignUpStep1: React.FC = () => {
                       </div>
                       <input
                         type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
+                        {...register("email")}
                         className={`block w-full pl-10 pr-3 py-2 border ${
                           errors.email ? "border-red-300" : "border-gray-300"
                         } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
@@ -260,7 +238,7 @@ const SignUpStep1: React.FC = () => {
                     </div>
                     {errors.email && (
                       <p className="mt-1 text-sm text-red-600">
-                        {errors.email}
+                        {errors.email.message}
                       </p>
                     )}
                   </div>
@@ -275,9 +253,7 @@ const SignUpStep1: React.FC = () => {
                       </div>
                       <input
                         type="tel"
-                        name="phone_number"
-                        value={formData.phone_number}
-                        onChange={handleChange}
+                        {...register("phone_number")}
                         className={`block w-full pl-10 pr-3 py-2 border ${
                           errors.phone_number
                             ? "border-red-300"
@@ -288,7 +264,7 @@ const SignUpStep1: React.FC = () => {
                     </div>
                     {errors.phone_number && (
                       <p className="mt-1 text-sm text-red-600">
-                        {errors.phone_number}
+                        {errors.phone_number.message}
                       </p>
                     )}
                   </div>
@@ -303,9 +279,7 @@ const SignUpStep1: React.FC = () => {
                       </div>
                       <input
                         type="password"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
+                        {...register("password")}
                         className={`block w-full pl-10 pr-3 py-2 border ${
                           errors.password ? "border-red-300" : "border-gray-300"
                         } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
@@ -314,7 +288,7 @@ const SignUpStep1: React.FC = () => {
                     </div>
                     {errors.password && (
                       <p className="mt-1 text-sm text-red-600">
-                        {errors.password}
+                        {errors.password.message}
                       </p>
                     )}
                   </div>
@@ -328,14 +302,25 @@ const SignUpStep1: React.FC = () => {
                         <Globe className="h-5 w-5 text-gray-400" />
                       </div>
                       <select
-                        name="primary_ships_country"
-                        value={formData.primary_ships_country}
-                        onChange={handleChange}
-                        className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        {...register("primary_ships_country")}
+                        className={`block w-full pl-10 pr-3 py-2 border ${
+                          errors.primary_ships_country
+                            ? "border-red-300"
+                            : "border-gray-300"
+                        } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
                       >
-                        <option value="US">United States</option>
+                        {countries.map((country) => (
+                          <option key={country.code} value={country.code}>
+                            {country.name}
+                          </option>
+                        ))}
                       </select>
                     </div>
+                    {errors.primary_ships_country && (
+                      <p className="mt-1 text-sm text-red-600">
+                        {errors.primary_ships_country.message}
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-3">
@@ -352,10 +337,10 @@ const SignUpStep1: React.FC = () => {
 
                   <button
                     type="submit"
-                    disabled={isLoading}
+                    disabled={isSubmitting}
                     className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                   >
-                    {isLoading ? (
+                    {isSubmitting ? (
                       <Loader2 className="h-5 w-5 animate-spin" />
                     ) : (
                       "Sign up"
