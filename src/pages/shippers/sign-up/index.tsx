@@ -16,7 +16,7 @@ import {
   Package,
 } from "lucide-react";
 import { useAuth } from "../../../hooks/use-auth";
-import { authApi, handleApiError } from "../../../services/api";
+import { authApi, handleApiError } from "../../../services/api/auth";
 import Layout from "../../../components/layout";
 import { signUpSchema } from "./schema";
 
