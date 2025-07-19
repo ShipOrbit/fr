@@ -1,0 +1,26 @@
+import type { AxiosResponse } from "axios";
+import api from ".";
+import type {
+  CountryRegionsData,
+  GeoDBCity,
+  ShippingNeedsData,
+} from "../../types";
+
+export const shipperApi = {
+  // Create shipping needs
+  createShippingNeeds: async (data: ShippingNeedsData) => {
+    const response: AxiosResponse<{
+      message: string;
+      redirect_to_verification: boolean;
+    }> = await api.post("/shipper/shipping-needs/", data);
+    return response.data;
+  },
+
+  //Get country Regions
+  getCountryRegions: async (data: CountryRegionsData) => {
+    const response: AxiosResponse<GeoDBCity[]> = await api.get(
+      `/shipper/country-regions?namePrefix=${data.search_Term}`
+    );
+    return response.data;
+  },
+};
