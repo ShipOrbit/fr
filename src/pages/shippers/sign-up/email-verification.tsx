@@ -1,14 +1,22 @@
 import { CheckCircle, Loader2, Mail, RefreshCw } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../../../hooks/use-auth";
-// import { authApi } from "../services/api";
 import Layout from "../../../components/layout";
+import { authApi } from "../../../services/api/auth";
+import { useNavigate } from "react-router";
 
 const EmailVerification: React.FC = () => {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const [isResending, setIsResending] = useState(false);
   const [resendMessage, setResendMessage] = useState("");
   const [resendSuccess, setResendSuccess] = useState(false);
+
+  useEffect(() => {
+    if (user?.shipping_needs) {
+      navigate("/dashboard");
+    }
+  }, [navigate, user]);
 
   const handleResendEmail = async () => {
     if (!user?.email) return;
@@ -19,7 +27,7 @@ const EmailVerification: React.FC = () => {
 
     try {
       // Simulate API call
-      // await authApi.resendVerificationEmail();
+      await authApi.resendVerificationEmail();
       setResendMessage("Verification email sent successfully!");
       setResendSuccess(true);
     } catch {
