@@ -1,5 +1,5 @@
 import { Building, Calendar, Clock, HandHeart, MapPin, X } from "lucide-react";
-import React, { useState } from "react";
+import React, { useState, type PropsWithChildren } from "react";
 import Header from "../components/header";
 
 const CreateShipmentAppointment: React.FC = () => {
@@ -24,7 +24,18 @@ const CreateShipmentAppointment: React.FC = () => {
     basePrice: 2500,
   };
 
-  const Modal = ({ isOpen, onClose, title, children }: any) => {
+  type ModalProps = {
+    isOpen: boolean;
+    title: string;
+    onClose: () => void;
+  };
+
+  const Modal: React.FC<PropsWithChildren<ModalProps>> = ({
+    isOpen,
+    onClose,
+    title,
+    children,
+  }) => {
     if (!isOpen) return null;
 
     return (
