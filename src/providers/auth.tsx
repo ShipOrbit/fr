@@ -4,7 +4,7 @@ import {
   type AuthContextType,
   type AuthProviderProps,
 } from "../contexts/app-context";
-import { authApi } from "../services/api";
+import { authApi } from "../services/api/auth";
 import type { AuthResponse, User } from "../types";
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {

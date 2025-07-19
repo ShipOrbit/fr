@@ -1,50 +1,14 @@
-import axios, { AxiosError, type AxiosResponse } from "axios";
+import { AxiosError, type AxiosResponse } from "axios";
 import type {
-  RegisterStepOneData,
-  RegisterStepTwoData,
-  LoginData,
-  PasswordResetData,
-  PasswordResetConfirmData,
-  AuthResponse,
-  User,
   ApiError,
-} from "../types";
-
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:8000/api";
-
-// Create axios instance
-const api = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-// Request interceptor to add auth token
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      config.headers.Authorization = `Token ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
-
-// Response interceptor to handle errors
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      window.location.href = "/login";
-    }
-    return Promise.reject(error);
-  }
-);
+  AuthResponse,
+  LoginData,
+  PasswordResetConfirmData,
+  PasswordResetData,
+  RegisterStepOneData,
+  User,
+} from "../../types";
+import api from ".";
 
 // Auth API
 export const authApi = {
@@ -54,15 +18,6 @@ export const authApi = {
       "/auth/register/step-1/",
       data
     );
-    return response.data;
-  },
-
-  // Register step 2
-  registerStepTwo: async (data: RegisterStepTwoData) => {
-    const response: AxiosResponse<{
-      message: string;
-      redirect_to_verification: boolean;
-    }> = await api.post("/auth/register/step-2/", data);
     return response.data;
   },
 
@@ -100,10 +55,9 @@ export const authApi = {
   },
 
   // Resend verification email
-  resendVerificationEmail: async (email: string) => {
+  resendVerificationEmail: async () => {
     const response: AxiosResponse<{ message: string }> = await api.post(
-      "/auth/resend-verification/",
-      { email }
+      "/auth/resend-verification/"
     );
     return response.data;
   },
@@ -129,17 +83,15 @@ export const authApi = {
 };
 
 // Error handling utility
-export const handleApiError = (
-  error: AxiosError<ApiError["errors"]>
-): ApiError => {
-  if (error.response?.data) {
-    return {
-      message: error.response.data.non_field_errors || "An error occurred",
-      errors: error.response.data || {},
-    };
+export const handleApiError = (error: AxiosError<ApiError>): ApiError => {
+  if (error.response?.data.errors) {
+    const { non_field_errors, ...errors } = error.response.data.errors;
+    const message = non_field_errors?.toString() || "An error occurred";
+    return { message: message, errors: errors };
   }
   return {
-    message: error.message || "Network error occurred",
+    message:
+      error.response?.data.message || error.message || "Network error occurred",
   };
 };
 
