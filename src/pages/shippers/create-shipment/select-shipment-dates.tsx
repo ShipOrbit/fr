@@ -1,13 +1,13 @@
-import React, { useState } from "react";
 import {
-  Calendar,
-  MapPin,
-  Truck,
   ArrowRight,
-  RotateCcw,
+  Calendar,
   ChevronDown,
+  MapPin,
+  RotateCcw,
+  Truck,
 } from "lucide-react";
-import Header from "../components/header";
+import React, { useState } from "react";
+import Layout from "../components/layout";
 
 const SelectDatePage: React.FC = () => {
   const [equipment, setEquipment] = useState("dryVan");
@@ -21,9 +21,7 @@ const SelectDatePage: React.FC = () => {
   const calendarDays = Array.from({ length: 21 }, (_, i) => i + 1);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-
+    <Layout>
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-xl shadow-lg border border-gray-200">
           <div className="p-6 border-b border-gray-200">
@@ -178,7 +176,7 @@ const SelectDatePage: React.FC = () => {
                       <button
                         key={day}
                         type="button"
-                        className="h-10 w-10 text-sm rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                        className="h-10 w-10 mx-auto text-sm rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors"
                       >
                         {day}
                       </button>
@@ -220,7 +218,7 @@ const SelectDatePage: React.FC = () => {
           </div>
         </div>
       </main>
-    </div>
+    </Layout>
   );
 };
 
