@@ -1,6 +1,7 @@
 import React from "react";
 import { ChevronDown, Menu } from "lucide-react";
 import { useAuth } from "../../../hooks/use-auth";
+import { Link } from "react-router";
 
 const Header: React.FC = () => {
   const { user } = useAuth();
@@ -23,24 +24,24 @@ const Header: React.FC = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-8">
-              <a
-                href="/dashboard"
+              <Link
+                to="/dashboard"
                 className="text-blue-600 hover:text-blue-700 px-3 py-2 rounded-md text-sm font-medium border-b-2 border-blue-600"
               >
                 Dashboard
-              </a>
-              <a
-                href="/create-shipment"
+              </Link>
+              <Link
+                to="/create-shipment"
                 className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium"
               >
                 Create Shipment
-              </a>
-              <a
-                href="/billing"
+              </Link>
+              <Link
+                to="/billing"
                 className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium"
               >
                 Billing
-              </a>
+              </Link>
 
               {/* User Dropdown */}
               <div className="relative">
@@ -50,49 +51,49 @@ const Header: React.FC = () => {
                 </button>
                 {/* Dropdown menu would be implemented with state management */}
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 hidden">
-                  <a
-                    href="/insight"
+                  <Link
+                    to="/insight"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     Insight
-                  </a>
-                  <a
-                    href="/download"
+                  </Link>
+                  <Link
+                    to="/download"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     Download Shipments
-                  </a>
-                  <a
-                    href="/faq"
+                  </Link>
+                  <Link
+                    to="/faq"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     View FAQs
-                  </a>
-                  <a
-                    href="/terms"
+                  </Link>
+                  <Link
+                    to="/terms"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     View Terms
-                  </a>
-                  <a
-                    href="/settings"
+                  </Link>
+                  <Link
+                    to="/settings"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     Settings
-                  </a>
-                  <a
-                    href="/contact"
+                  </Link>
+                  <Link
+                    to="/contact"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     Contact us
-                  </a>
+                  </Link>
                   <hr className="my-1" />
-                  <a
-                    href="/logout"
+                  <Link
+                    to="/logout"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     Sign Out
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
