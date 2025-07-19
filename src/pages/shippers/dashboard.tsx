@@ -1,7 +1,7 @@
+import { Calendar, Clock, MapPin, MoreHorizontal, Search } from "lucide-react";
 import React from "react";
-import { Search, MoreHorizontal, MapPin, Calendar, Clock } from "lucide-react";
-import Header from "./components/header";
 import { useAuth } from "../../hooks/use-auth";
+import Layout from "./components/layout";
 
 interface Shipment {
   _id: string;
@@ -86,9 +86,7 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-
+    <Layout>
       {/* Welcome Section */}
       <div className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -244,7 +242,7 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 
