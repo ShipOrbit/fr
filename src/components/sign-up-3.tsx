@@ -1,7 +1,8 @@
-import { CheckCircle, Loader2, Mail, RefreshCw, Truck } from "lucide-react";
+import { CheckCircle, Loader2, Mail, RefreshCw } from "lucide-react";
 import React, { useState } from "react";
 import { useAuth } from "../hooks/use-auth";
-import { Link } from "react-router";
+// import { authApi } from "../services/api";
+import Layout from "./layout";
 
 const SignUpStep3: React.FC = () => {
   const { user } = useAuth();
@@ -18,7 +19,7 @@ const SignUpStep3: React.FC = () => {
 
     try {
       // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // await authApi.resendVerificationEmail();
       setResendMessage("Verification email sent successfully!");
       setResendSuccess(true);
     } catch {
@@ -30,151 +31,127 @@ const SignUpStep3: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-8">
-          <Truck className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-          <h1 className="text-3xl font-extrabold text-gray-900">
-            Join ShipOrbit
-          </h1>
-          <p className="mt-2 text-gray-600">Almost there! Just one more step</p>
-        </div>
-
-        <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-          <div className="lg:flex">
-            {/* Left side - Progress and Content */}
-            <div className="lg:w-2/3 p-8">
-              {/* Progress Steps */}
-              <div className="mb-8">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center">
-                    <CheckCircle className="h-6 w-6 text-green-500 mr-2" />
-                    <span className="text-sm font-medium text-gray-900">
-                      Contact Info
-                    </span>
-                  </div>
-                  <div className="flex items-center">
-                    <CheckCircle className="h-6 w-6 text-green-500 mr-2" />
-                    <span className="text-sm font-medium text-gray-900">
-                      Shipping Needs
-                    </span>
-                  </div>
-                  <div className="flex items-center">
-                    <div className="h-6 w-6 bg-blue-600 rounded-full flex items-center justify-center mr-2">
-                      <span className="text-white text-xs font-bold">3</span>
+    <Layout>
+      <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-white shadow-lg rounded-lg overflow-hidden">
+            <div className="lg:flex">
+              {/* Left side - Progress and Content */}
+              <div className="p-8">
+                {/* Progress Steps */}
+                <div className="mb-8">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center">
+                      <CheckCircle className="h-6 w-6 text-green-500 mr-2" />
+                      <span className="text-sm font-medium text-gray-900">
+                        Contact Info
+                      </span>
                     </div>
-                    <span className="text-sm font-medium text-blue-600">
-                      Account Creation
-                    </span>
+                    <div className="flex items-center">
+                      <CheckCircle className="h-6 w-6 text-green-500 mr-2" />
+                      <span className="text-sm font-medium text-gray-900">
+                        Shipping Needs
+                      </span>
+                    </div>
+                    <div className="flex items-center">
+                      <div className="h-6 w-6 bg-blue-600 rounded-full flex items-center justify-center mr-2">
+                        <span className="text-white text-xs font-bold">3</span>
+                      </div>
+                      <span className="text-sm font-medium text-blue-600">
+                        Account Creation
+                      </span>
+                    </div>
                   </div>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div
-                    className="bg-blue-600 h-2 rounded-full"
-                    style={{ width: "100%" }}
-                  ></div>
-                </div>
-              </div>
-
-              {/* Main Content */}
-              <div className="text-center mb-8">
-                <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 mb-6">
-                  <Mail className="h-8 w-8 text-blue-600" />
-                </div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                  Check your email
-                </h2>
-                <p className="text-gray-600 mb-6">
-                  To complete your registration for{" "}
-                  <strong>{user?.company?.name}</strong>, please follow the
-                  instructions we just sent to your email address.
-                </p>
-
-                <div className="bg-gray-50 rounded-lg p-4 mb-6">
-                  <p className="text-sm text-gray-600 mb-1">Email address</p>
-                  <p className="text-lg font-medium text-gray-900">
-                    {user?.email}
-                  </p>
-                </div>
-
-                <p className="text-sm text-gray-600 mb-6">
-                  If you have trouble finding the email, try checking your spam
-                  folder or make sure the email address you provided is correct.
-                </p>
-
-                {/* Resend Section */}
-                <div className="border-t pt-6">
-                  <p className="text-sm text-gray-600 mb-4">
-                    Didn't receive the email?
-                  </p>
-
-                  <button
-                    onClick={handleResendEmail}
-                    disabled={isResending}
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-blue-600 bg-blue-50 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed mr-4"
-                  >
-                    {isResending ? (
-                      <>
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Sending...
-                      </>
-                    ) : (
-                      <>
-                        <RefreshCw className="h-4 w-4 mr-2" />
-                        Resend email
-                      </>
-                    )}
-                  </button>
-
-                  <Link
-                    to="/dashboard"
-                    className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                  >
-                    Continue To Dashboard
-                  </Link>
-
-                  {resendMessage && (
+                  <div className="w-full bg-gray-200 rounded-full h-2">
                     <div
-                      className={`mt-4 p-3 rounded-md text-sm ${
-                        resendSuccess
-                          ? "bg-green-50 border border-green-200 text-green-700"
-                          : "bg-red-50 border border-red-200 text-red-700"
-                      }`}
-                    >
-                      {resendMessage}
-                    </div>
-                  )}
+                      className="bg-blue-600 h-2 rounded-full"
+                      style={{ width: "100%" }}
+                    ></div>
+                  </div>
                 </div>
-              </div>
 
-              {/* Additional Help */}
-              <div className="bg-blue-50 rounded-lg p-4">
-                <h3 className="text-sm font-medium text-blue-900 mb-2">
-                  What happens next?
-                </h3>
-                <ul className="text-sm text-blue-800 space-y-1">
-                  <li>• Click the verification link in your email</li>
-                  <li>• Your account will be activated instantly</li>
-                  <li>• You'll be redirected to your ShipOrbit dashboard</li>
-                  <li>• Start managing your shipments right away</li>
-                </ul>
-              </div>
-            </div>
+                {/* Main Content */}
+                <div className="text-center mb-8">
+                  <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 mb-6">
+                    <Mail className="h-8 w-8 text-blue-600" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                    Check your email
+                  </h2>
+                  <p className="text-gray-600 mb-6">
+                    To complete your registration for{" "}
+                    <strong>{user?.company?.name}</strong>, please follow the
+                    instructions we just sent to your email address.
+                  </p>
 
-            {/* Right side - Image */}
-            <div className="lg:w-1/3 bg-gradient-to-br from-blue-600 to-indigo-700">
-              <div className="h-full flex items-center justify-center p-8">
-                <img
-                  src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                  alt="Email verification"
-                  className="rounded-lg shadow-lg"
-                />
+                  <div className="bg-gray-50 rounded-lg p-4 mb-6">
+                    <p className="text-sm text-gray-600 mb-1">Email address</p>
+                    <p className="text-lg font-medium text-gray-900">
+                      {user?.email}
+                    </p>
+                  </div>
+
+                  <p className="text-sm text-gray-600 mb-6">
+                    If you have trouble finding the email, try checking your
+                    spam folder or make sure the email address you provided is
+                    correct.
+                  </p>
+
+                  {/* Resend Section */}
+                  <div className="border-t pt-6">
+                    <p className="text-sm text-gray-600 mb-4">
+                      Didn't receive the email?
+                    </p>
+
+                    <button
+                      onClick={handleResendEmail}
+                      disabled={isResending}
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-blue-600 bg-blue-50 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed mr-4"
+                    >
+                      {isResending ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Sending...
+                        </>
+                      ) : (
+                        <>
+                          <RefreshCw className="h-4 w-4 mr-2" />
+                          Resend email
+                        </>
+                      )}
+                    </button>
+                    {resendMessage && (
+                      <div
+                        className={`mt-4 p-3 rounded-md text-sm ${
+                          resendSuccess
+                            ? "bg-green-50 border border-green-200 text-green-700"
+                            : "bg-red-50 border border-red-200 text-red-700"
+                        }`}
+                      >
+                        {resendMessage}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Additional Help */}
+                <div className="bg-blue-50 rounded-lg p-4">
+                  <h3 className="text-sm font-medium text-blue-900 mb-2">
+                    What happens next?
+                  </h3>
+                  <ul className="text-sm text-blue-800 space-y-1">
+                    <li>• Click the verification link in your email</li>
+                    <li>• Your account will be activated instantly</li>
+                    <li>• You'll be redirected to your ShipOrbit dashboard</li>
+                    <li>• Start managing your shipments right away</li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 
