@@ -5,9 +5,10 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
-import { useAuth } from "../hooks/use-auth";
-import { authApi, handleApiError } from "../services/api";
-import Layout from "./layout";
+import { useAuth } from "../../../hooks/use-auth";
+import { authApi, handleApiError } from "../../../services/api";
+import Layout from "../../../components/layout";
+import { shipmentNeedsSchema } from "./schema";
 
 // GeoDB Cities API types
 interface GeoDBCity {
@@ -24,20 +25,9 @@ interface GeoDBResponse {
   data: GeoDBCity[];
 }
 
-// Zod schema for form validation
-const signUpStep2Schema = z.object({
-  company_location: z.string().min(1, "Please select a company location"),
-  mode: z.array(z.string()).min(1, "Please select at least one mode type"),
-  average_ftl: z.string().min(1, "Please select average FTL shipment volume"),
-  trailer_type: z
-    .array(z.string())
-    .min(1, "Please select at least one trailer type"),
-  user_id: z.number().optional(),
-});
+type ShipmentNeedsFormData = z.infer<typeof shipmentNeedsSchema>;
 
-type SignUpStep2FormData = z.infer<typeof signUpStep2Schema>;
-
-const SignUpStep2: React.FC = () => {
+const ShipmentNeeds: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [cities, setCities] = useState<GeoDBCity[]>([]);
@@ -53,8 +43,8 @@ const SignUpStep2: React.FC = () => {
     formState: { errors, isSubmitting },
     setError,
     clearErrors,
-  } = useForm<SignUpStep2FormData>({
-    resolver: zodResolver(signUpStep2Schema),
+  } = useForm<ShipmentNeedsFormData>({
+    resolver: zodResolver(shipmentNeedsSchema),
     defaultValues: {
       company_location: "",
       mode: [],
@@ -143,7 +133,7 @@ const SignUpStep2: React.FC = () => {
     clearErrors(name);
   };
 
-  const onSubmit = async (data: SignUpStep2FormData) => {
+  const onSubmit = async (data: ShipmentNeedsFormData) => {
     try {
       clearErrors("root");
       await authApi.registerStepTwo(data);
@@ -153,7 +143,7 @@ const SignUpStep2: React.FC = () => {
         const apiError = handleApiError(error);
         if (apiError.errors) {
           Object.entries(apiError.errors).forEach(([field, message]) => {
-            setError(field as keyof SignUpStep2FormData, {
+            setError(field as keyof ShipmentNeedsFormData, {
               type: "server",
               message: message as unknown as string,
             });
@@ -502,4 +492,4 @@ const SignUpStep2: React.FC = () => {
   );
 };
 
-export default SignUpStep2;
+export default ShipmentNeeds;

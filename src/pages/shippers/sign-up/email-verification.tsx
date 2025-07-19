@@ -1,10 +1,10 @@
 import { CheckCircle, Loader2, Mail, RefreshCw } from "lucide-react";
 import React, { useState } from "react";
-import { useAuth } from "../hooks/use-auth";
+import { useAuth } from "../../../hooks/use-auth";
 // import { authApi } from "../services/api";
-import Layout from "./layout";
+import Layout from "../../../components/layout";
 
-const SignUpStep3: React.FC = () => {
+const EmailVerification: React.FC = () => {
   const { user } = useAuth();
   const [isResending, setIsResending] = useState(false);
   const [resendMessage, setResendMessage] = useState("");
@@ -155,4 +155,4 @@ const SignUpStep3: React.FC = () => {
   );
 };
 
-export default SignUpStep3;
+export default EmailVerification;
