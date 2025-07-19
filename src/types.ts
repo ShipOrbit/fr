@@ -34,6 +34,20 @@ export interface ShipmentNeedsData {
   average_ftl: string;
   trailer_type: string[];
 }
+
+export interface CountryRegionsData {
+  search_Term: string;
+}
+export interface GeoDBCity {
+  id: 489;
+  wikiDataId: string;
+  name: string;
+  countryCode: string;
+  fipsCode: string;
+  isoCode: string;
+  type: string;
+}
+
 export interface LoginData {
   email: string;
   password: string;
