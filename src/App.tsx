@@ -1,20 +1,20 @@
 import { createBrowserRouter, RouterProvider } from "react-router";
 import SignIn from "./components/signin";
-import { AuthProvider } from "./providers/auth";
 import HomePage from "./pages";
-import SignUpStep1 from "./components/sign-up-1";
-import SignUpStep2 from "./components/sign-up-2";
-import SignUpStep3 from "./components/sign-up-3";
-import ShipperDashboard from "./pages/shippers/dashboard";
-import ShippersLanding from "./pages/shippers";
-import CarriersLanding from "./pages/carriers";
-import SupportLanding from "./pages/support";
 import AboutPage from "./pages/about";
-import ShipmentDetails from "./pages/shippers/shipment-details";
-import SelectDatePage from "./pages/shippers/create-shipment/select-shipment-dates";
-import CreateShipmentAppointment from "./pages/shippers/create-shipment/create-shipment-appointment";
+import CarriersLanding from "./pages/carriers";
+import ShippersLanding from "./pages/shippers";
 import ShipmentFinalizing from "./pages/shippers/create-shipment/create-shipment-3";
+import CreateShipmentAppointment from "./pages/shippers/create-shipment/create-shipment-appointment";
+import SelectDatePage from "./pages/shippers/create-shipment/select-shipment-dates";
+import ShipperDashboard from "./pages/shippers/dashboard";
+import ShipmentDetails from "./pages/shippers/shipment-details";
+import SignUpStep1 from "./pages/shippers/sign-up";
+import SignUpStep3 from "./pages/shippers/sign-up/email-verification";
+import SignUpStep2 from "./pages/shippers/sign-up/shipping-needs";
+import SupportLanding from "./pages/support";
 import VerifyEmail from "./pages/verify-email";
+import { AuthProvider } from "./providers/auth";
 
 const router = createBrowserRouter([
   {
