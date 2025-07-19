@@ -13,6 +13,8 @@ import AboutPage from "./pages/about";
 import ShipmentDetails from "./pages/shippers/shipment-details";
 import SelectDatePage from "./pages/shippers/create-shipment/select-shipment-dates";
 import CreateShipmentAppointment from "./pages/shippers/create-shipment/create-shipment-appointment";
+import ShipmentFinalizing from "./pages/shippers/create-shipment/create-shipment-3";
+import VerifyEmail from "./pages/verify-email";
 
 const router = createBrowserRouter([
   {
@@ -36,6 +38,10 @@ const router = createBrowserRouter([
     element: <SignUpStep3 />,
   },
   {
+    path: "/verify-email/:token",
+    element: <VerifyEmail />,
+  },
+  {
     path: "/dashboard",
     element: <ShipperDashboard />,
   },
@@ -50,6 +56,10 @@ const router = createBrowserRouter([
   {
     path: "/shipment-appointment",
     element: <CreateShipmentAppointment />,
+  },
+  {
+    path: "/shipment-finalizing",
+    element: <ShipmentFinalizing />,
   },
   {
     path: "/shippers",
