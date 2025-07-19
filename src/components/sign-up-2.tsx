@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import type { RegisterStepTwoData, FormErrors } from "../types";
-import { authApi, handleApiError } from "../services/api";
-import Layout from "./layout";
-import { Loader2, Truck, Package, MapPin, CheckCircle } from "lucide-react";
 import { AxiosError } from "axios";
+import { CheckCircle, Loader2, MapPin, Package } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/use-auth";
+import { authApi, handleApiError } from "../services/api";
+import type { FormErrors, RegisterStepTwoData } from "../types";
+import Layout from "./layout";
 
 const SignUpStep2: React.FC = () => {
   const navigate = useNavigate();
