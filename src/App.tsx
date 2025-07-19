@@ -11,7 +11,8 @@ import CarriersLanding from "./pages/carriers";
 import SupportLanding from "./pages/support";
 import AboutPage from "./pages/about";
 import ShipmentDetails from "./pages/shippers/shipment-details";
-import SelectDatePage from "./pages/shippers/create-shipment/select-dates";
+import SelectDatePage from "./pages/shippers/create-shipment/select-shipment-dates";
+import CreateShipmentAppointment from "./pages/shippers/create-shipment/create-shipment-appointment";
 
 const router = createBrowserRouter([
   {
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
   {
     path: "/select-date",
     element: <SelectDatePage />,
+  },
+  {
+    path: "/shipment-appointment",
+    element: <CreateShipmentAppointment />,
   },
   {
     path: "/shippers",
