@@ -1,11 +1,11 @@
+import { AxiosError } from "axios";
 import { Loader2, Lock, Mail, Package } from "lucide-react";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/use-auth";
+import { authApi, handleApiError } from "../services/api/auth";
 import type { AuthResponse, FormErrors, LoginData } from "../types";
 import Layout from "./layout";
-import { authApi, handleApiError } from "../services/api";
-import { AxiosError } from "axios";
 
 const SignIn: React.FC = () => {
   const navigate = useNavigate();
