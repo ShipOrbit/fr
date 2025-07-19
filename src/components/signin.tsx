@@ -1,74 +1,61 @@
-import { AxiosError } from "axios";
-import { Loader2, Lock, Mail, Package } from "lucide-react";
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useNavigate, Link } from "react-router-dom";
+import { Package, Mail, Lock, Loader2 } from "lucide-react";
+import { AxiosError } from "axios";
+import Layout from "../components/layout";
 import { useAuth } from "../hooks/use-auth";
 import { authApi, handleApiError } from "../services/api/auth";
-import type { AuthResponse, FormErrors, LoginData } from "../types";
-import Layout from "./layout";
+import type { AuthResponse } from "../types";
+
+// Zod schema for form validation
+const loginSchema = z.object({
+  email: z
+    .string()
+    .min(1, "Email is required")
+    .email("Please enter a valid email address"),
+  password: z.string().min(1, "Password is required"),
+});
+
+type LoginFormData = z.infer<typeof loginSchema>;
 
 const SignIn: React.FC = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
-  const [formData, setFormData] = useState<LoginData>({
-    email: "",
-    password: "",
-  });
-  const [errors, setErrors] = useState<FormErrors>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [generalError, setGeneralError] = useState<string | string[]>("");
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    mode: "onChange",
+  });
 
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
-    }
-  };
-
-  const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
-
-    if (!formData.email) {
-      newErrors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email address";
-    }
-
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!validateForm()) return;
-
+  const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
+    setGeneralError("");
 
     try {
-      const response: AuthResponse = await authApi.login(formData);
+      const response: AuthResponse = await authApi.login(data);
 
       const result = await login(response);
 
       if (result.success) {
         navigate("/dashboard");
       } else {
-        setErrors({ general: result.message });
+        setGeneralError(result.message);
       }
     } catch (error) {
       if (error instanceof AxiosError) {
         const apiError = handleApiError(error);
-        setErrors({ general: apiError.message });
+        setGeneralError(apiError.message);
       } else {
-        setErrors({
-          general: "An unexpected error occurred. Please try again.",
-        });
+        setGeneralError("An unexpected error occurred. Please try again.");
       }
     } finally {
       setIsLoading(false);
@@ -98,10 +85,10 @@ const SignIn: React.FC = () => {
           </div>
 
           <div className="bg-white py-8 px-6 shadow-lg rounded-lg">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {errors.general && (
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              {generalError && (
                 <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
-                  {errors.general}
+                  {generalError}
                 </div>
               )}
 
@@ -118,10 +105,8 @@ const SignIn: React.FC = () => {
                   </div>
                   <input
                     id="email"
-                    name="email"
                     type="email"
-                    value={formData.email}
-                    onChange={handleChange}
+                    {...register("email")}
                     className={`block w-full pl-10 pr-3 py-2 border ${
                       errors.email ? "border-red-300" : "border-gray-300"
                     } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
@@ -129,7 +114,9 @@ const SignIn: React.FC = () => {
                   />
                 </div>
                 {errors.email && (
-                  <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.email.message}
+                  </p>
                 )}
               </div>
 
@@ -146,10 +133,8 @@ const SignIn: React.FC = () => {
                   </div>
                   <input
                     id="password"
-                    name="password"
                     type="password"
-                    value={formData.password}
-                    onChange={handleChange}
+                    {...register("password")}
                     className={`block w-full pl-10 pr-3 py-2 border ${
                       errors.password ? "border-red-300" : "border-gray-300"
                     } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
@@ -157,7 +142,9 @@ const SignIn: React.FC = () => {
                   />
                 </div>
                 {errors.password && (
-                  <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.password.message}
+                  </p>
                 )}
               </div>
 
