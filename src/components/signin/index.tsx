@@ -5,19 +5,11 @@ import { z } from "zod";
 import { useNavigate, Link } from "react-router-dom";
 import { Package, Mail, Lock, Loader2 } from "lucide-react";
 import { AxiosError } from "axios";
-import Layout from "../components/layout";
-import { useAuth } from "../hooks/use-auth";
-import { authApi, handleApiError } from "../services/api/auth";
-import type { AuthResponse } from "../types";
-
-// Zod schema for form validation
-const loginSchema = z.object({
-  email: z
-    .string()
-    .min(1, "Email is required")
-    .email("Please enter a valid email address"),
-  password: z.string().min(1, "Password is required"),
-});
+import Layout from "../layout";
+import { useAuth } from "../../hooks/use-auth";
+import { authApi, handleApiError } from "../../services/api/auth";
+import type { AuthResponse } from "../../types";
+import loginSchema from "./schema";
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
