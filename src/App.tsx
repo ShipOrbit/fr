@@ -4,7 +4,7 @@ import HomePage from "./pages";
 import AboutPage from "./pages/about";
 import CarriersLanding from "./pages/carriers";
 import ShippersLanding from "./pages/shippers";
-import ShipmentFinalizing from "./pages/shippers/create-shipment/create-shipment-3";
+import ShipmentFinalizing from "./pages/shippers/create-shipment/shipment-finalizing";
 import CreateShipmentAppointment from "./pages/shippers/create-shipment/create-shipment-appointment";
 import SelectDatePage from "./pages/shippers/create-shipment/select-shipment-dates";
 import ShipperDashboard from "./pages/shippers/dashboard";
