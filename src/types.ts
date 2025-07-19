@@ -27,7 +27,8 @@ export interface RegisterStepOneData {
   company_name: string;
   primary_ships_country: string;
 }
-export interface RegisterStepTwoData {
+
+export interface ShipmentNeedsData {
   company_location: string;
   mode: string[];
   average_ftl: string;
@@ -50,7 +51,7 @@ export interface AuthResponse {
   message: string;
 }
 export interface ApiError {
-  message: string | string[];
+  message: string;
   errors?: Record<string, string[]>;
 }
 export interface FormErrors {
@@ -59,7 +60,7 @@ export interface FormErrors {
 export interface RegistrationState {
   step: number;
   userData: Partial<RegisterStepOneData>;
-  shippingData: Partial<RegisterStepTwoData>;
+  shippingData: Partial<ShipmentNeedsData>;
   isLoading: boolean;
   errors: FormErrors;
 }
