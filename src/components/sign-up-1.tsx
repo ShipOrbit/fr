@@ -127,16 +127,6 @@ const SignUpStep1: React.FC = () => {
     <Layout>
       <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-8">
-            <Truck className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-            <h1 className="text-3xl font-extrabold text-gray-900">
-              Join ShipOrbit
-            </h1>
-            <p className="mt-2 text-gray-600">
-              Start your journey with modern logistics
-            </p>
-          </div>
-
           <div className="bg-white shadow-lg rounded-lg overflow-hidden">
             <div className="lg:flex">
               {/* Left side - Form */}
@@ -391,7 +381,16 @@ const SignUpStep1: React.FC = () => {
 
               {/* Right side - Features */}
               <div className="lg:w-1/2 bg-gradient-to-br from-blue-600 to-indigo-700 p-8 text-white">
-                <div className="h-full flex flex-col justify-center">
+                <div className="h-full flex flex-col">
+                  <div className="text-center mb-8">
+                    <Package className="h-12 w-12 text-white mx-auto mb-4" />
+                    <h1 className="text-3xl font-extrabold text-white">
+                      Join ShipOrbit
+                    </h1>
+                    <p className="mt-2 text-white">
+                      Start your journey with modern logistics
+                    </p>
+                  </div>
                   <div className="mb-8">
                     <img
                       src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
