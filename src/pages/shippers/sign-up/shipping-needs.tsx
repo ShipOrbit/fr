@@ -9,7 +9,7 @@ import Layout from "../../../components/layout";
 import { useAuth } from "../../../hooks/use-auth";
 import { handleApiError } from "../../../services/api/auth";
 import { shipperApi } from "../../../services/api/shipper";
-import type { GeoDBCity } from "../../../types";
+import type { GeoDBRegion } from "../../../types";
 import { shippingNeedsSchema } from "./schema";
 
 type ShippingNeedsFormData = z.infer<typeof shippingNeedsSchema>;
@@ -17,7 +17,7 @@ type ShippingNeedsFormData = z.infer<typeof shippingNeedsSchema>;
 const ShippingNeeds: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [cities, setCities] = useState<GeoDBCity[]>([]);
+  const [cities, setCities] = useState<GeoDBRegion[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoadingCities, setIsLoadingCities] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -88,7 +88,7 @@ const ShippingNeeds: React.FC = () => {
     return () => clearTimeout(debounceTimer);
   }, [searchCities, searchTerm]);
 
-  const handleLocationSelect = (city: GeoDBCity) => {
+  const handleLocationSelect = (city: GeoDBRegion) => {
     const locationValue = `${city.name}, ${city.countryCode}`;
     setValue("company_location", locationValue);
     setSearchTerm(locationValue);
