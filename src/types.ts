@@ -48,6 +48,17 @@ export interface GeoDBCity {
   type: string;
 }
 
+export interface PriceCalculation {
+  pickup_location: string;
+  dropoff_location: string;
+  equipment: string;
+  miles: number;
+  base_price: number;
+  min_transit_time: number;
+  driver_assist_fee: number;
+  total_price_with_assist: number;
+}
+
 export interface LoginData {
   email: string;
   password: string;
