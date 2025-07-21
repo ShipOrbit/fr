@@ -2,23 +2,98 @@ import {
   ArrowRight,
   Calendar,
   ChevronDown,
-  MapPin,
   RotateCcw,
   Truck,
 } from "lucide-react";
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  LocationSearchInput,
+  type City,
+} from "../../../components/location-search-input";
+import { shipperApi } from "../../../services/api/shipper";
+import type { PriceCalculation } from "../../../types";
 import Layout from "../components/layout";
+import { cn } from "../../../utils/cn";
 
 const SelectDatePage: React.FC = () => {
   const [equipment, setEquipment] = useState("dryVan");
-  const [pickupLocation, setPickupLocation] = useState("");
-  const [dropoffLocation, setDropoffLocation] = useState("");
+  const [pickupLocation, setPickupLocation] = useState<number>();
+  const [dropoffLocation, setDropoffLocation] = useState<number>();
   const [pickupDate, setPickupDate] = useState("");
   const [dropoffDate, setDropoffDate] = useState("");
   const [showEquipmentDropdown, setShowEquipmentDropdown] = useState(false);
+  const [distancePrice, setDistancePrice] = useState<PriceCalculation | null>(
+    null
+  );
+  const [isLoading, setIsLoading] = useState(false);
+  const today = useMemo(() => new Date().toISOString().split("T")[0], []);
+
+  const onPickLocationSelect = useCallback((city: City) => {
+    setPickupLocation(city.id);
+  }, []);
+
+  const onDropoffLocationSelect = useCallback((city: City) => {
+    setDropoffLocation(city.id);
+  }, []);
+
+  const getCities = useCallback(
+    (search: string) => shipperApi.searchCities({ name_prefix: search }),
+    []
+  );
+
+  useEffect(() => {
+    if (pickupDate && distancePrice?.min_transit_time) {
+      const pickup = new Date(pickupDate);
+
+      // Calculate dropoff date by adding transit days
+      const dropoff = new Date(pickup);
+      dropoff.setDate(pickup.getDate() + distancePrice.min_transit_time);
+
+      // Format as YYYY-MM-DD
+      const formattedDate = dropoff.toISOString().split("T")[0];
+      setDropoffDate(formattedDate);
+    } else {
+      setPickupDate("");
+      setDropoffDate("");
+    }
+  }, [pickupDate, distancePrice]);
+
+  useEffect(() => {
+    const fetchDistancePrice = async () => {
+      if (!pickupLocation || !dropoffLocation) {
+        setDistancePrice(null);
+        return;
+      }
+      setIsLoading(true);
+      try {
+        const result = await shipperApi.getDistancePrice({
+          pickup_location: pickupLocation,
+          dropoff_location: dropoffLocation,
+          equipment,
+        });
+        setDistancePrice(result);
+      } catch {
+        setDistancePrice(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    const debounceTimer = setTimeout(() => fetchDistancePrice(), 1000);
+
+    return () => clearTimeout(debounceTimer);
+  }, [pickupLocation, dropoffLocation, equipment]);
 
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const calendarDays = Array.from({ length: 21 }, (_, i) => i + 1);
+  const calendarDays = Array.from({ length: 21 }, (_, i) => {
+    const date = new Date();
+    date.setDate(date.getDate() + i);
+
+    return {
+      date: date.toISOString().split("T")[0], // 'YYYY-MM-DD'
+      isCurrentMonth: date.getMonth() === new Date().getMonth(),
+    };
+  });
 
   return (
     <Layout>
@@ -91,32 +166,24 @@ const SelectDatePage: React.FC = () => {
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Pick-up location
                   </label>
-                  <div className="relative">
-                    <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <input
-                      type="text"
-                      value={pickupLocation}
-                      onChange={(e) => setPickupLocation(e.target.value)}
-                      placeholder="City, State"
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    />
-                  </div>
+                  <LocationSearchInput
+                    label="Pick-up location"
+                    placeholder="City, State"
+                    onSelect={onPickLocationSelect}
+                    getCities={getCities}
+                  />
                 </div>
 
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Drop-off location
                   </label>
-                  <div className="relative">
-                    <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <input
-                      type="text"
-                      value={dropoffLocation}
-                      onChange={(e) => setDropoffLocation(e.target.value)}
-                      placeholder="City, State"
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    />
-                  </div>
+                  <LocationSearchInput
+                    label="Drop-off location"
+                    placeholder="City, State"
+                    onSelect={onDropoffLocationSelect}
+                    getCities={getCities}
+                  />
                 </div>
 
                 <div>
@@ -126,6 +193,8 @@ const SelectDatePage: React.FC = () => {
                   <input
                     type="date"
                     value={pickupDate}
+                    disabled={!distancePrice}
+                    min={today}
                     onChange={(e) => setPickupDate(e.target.value)}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                   />
@@ -137,6 +206,7 @@ const SelectDatePage: React.FC = () => {
                   </label>
                   <input
                     type="date"
+                    disabled
                     value={dropoffDate}
                     onChange={(e) => setDropoffDate(e.target.value)}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
@@ -153,6 +223,10 @@ const SelectDatePage: React.FC = () => {
                   <button
                     type="button"
                     className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 transition-colors"
+                    onClick={() => {
+                      setPickupDate("");
+                      setDropoffDate("");
+                    }}
                   >
                     <RotateCcw className="h-4 w-4" />
                     <span className="text-sm font-medium">Reset dates</span>
@@ -172,42 +246,78 @@ const SelectDatePage: React.FC = () => {
                   </div>
 
                   <div className="grid grid-cols-7 gap-2">
-                    {calendarDays.map((day) => (
-                      <button
-                        key={day}
-                        type="button"
-                        className="h-10 w-10 mx-auto text-sm rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors"
-                      >
-                        {day}
-                      </button>
-                    ))}
+                    {calendarDays.map(({ date, isCurrentMonth }) => {
+                      const isPickup = date === pickupDate;
+                      const isDropoff = date === dropoffDate;
+
+                      const isInRange =
+                        pickupDate &&
+                        dropoffDate &&
+                        date > pickupDate &&
+                        date < dropoffDate;
+
+                      return (
+                        <button
+                          key={date}
+                          onClick={() => setPickupDate(date)}
+                          type="button"
+                          disabled={!distancePrice}
+                          className={cn(
+                            "h-10 w-10 mx-auto text-sm rounded-lg transition-colors",
+                            {
+                              "bg-blue-600 text-white": isPickup,
+                              "bg-green-500 text-white": isDropoff,
+                              "bg-blue-100 text-blue-800": isInRange,
+                              "hover:bg-blue-50 hover:text-blue-600":
+                                !isPickup && !isDropoff && !isInRange,
+                              "text-gray-400": !isCurrentMonth,
+                            }
+                          )}
+                        >
+                          {new Date(date).getDate()}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
 
               {/* Summary and Submit */}
               <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-8">
-                    <div className="text-center">
-                      <p className="text-sm text-gray-600">Distance</p>
-                      <p className="text-lg font-bold text-green-600">-- mi</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-sm text-gray-600">Transit Time</p>
-                      <p className="text-lg font-bold text-green-600">
-                        -- days
-                      </p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-sm text-gray-600">Price</p>
-                      <p className="text-lg font-bold text-green-600">$--</p>
-                    </div>
+                <div className="flex items-center space-x-8">
+                  <div className="text-center">
+                    <p className="text-sm text-gray-600">Distance</p>
+                    <p className="text-lg font-bold text-green-600">
+                      {isLoading
+                        ? "Loading..."
+                        : distancePrice
+                        ? `${distancePrice.miles} mi`
+                        : "-- mi"}
+                    </p>
                   </div>
-
+                  <div className="text-center">
+                    <p className="text-sm text-gray-600">Transit Time</p>
+                    <p className="text-lg font-bold text-green-600">
+                      {isLoading
+                        ? "Loading..."
+                        : distancePrice
+                        ? `${distancePrice.min_transit_time} days`
+                        : "-- days"}
+                    </p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-sm text-gray-600">Price</p>
+                    <p className="text-lg font-bold text-green-600">
+                      {isLoading
+                        ? "Loading..."
+                        : distancePrice
+                        ? `$${distancePrice.total_price_with_assist}`
+                        : "$--"}
+                    </p>
+                  </div>
                   <button
                     type="submit"
-                    className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+                    className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors ml-auto"
                   >
                     <span>Review shipment</span>
                     <ArrowRight className="h-4 w-4" />
