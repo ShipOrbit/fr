@@ -16,6 +16,14 @@ export const shipperApi = {
     return response.data;
   },
 
+  //Search cities
+  searchCities: async (data: SearchCitiesData) => {
+    const response: AxiosResponse<GeoDBCity[]> = await api.get(
+      `/shipper/cities?name_prefix=${data.name_prefix}`
+    );
+    return response.data;
+  },
+
   //Get country Regions
   getCountryRegions: async (data: CountryRegionsData) => {
     const response: AxiosResponse<GeoDBCity[]> = await api.get(
