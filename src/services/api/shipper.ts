@@ -26,7 +26,7 @@ export const shipperApi = {
 
   //Get country Regions
   getCountryRegions: async (data: CountryRegionsData) => {
-    const response: AxiosResponse<GeoDBCity[]> = await api.get(
+    const response: AxiosResponse<GeoDBRegion[]> = await api.get(
       `/shipper/country-regions?namePrefix=${data.search_Term}`
     );
     return response.data;
