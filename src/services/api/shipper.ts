@@ -23,4 +23,13 @@ export const shipperApi = {
     );
     return response.data;
   },
+
+  //Get distance price
+  getDistancePrice: async (data: DistancePriceData) => {
+    const response: AxiosResponse<PriceCalculation> = await api.post(
+      "/shipper/distance-price/",
+      data
+    );
+    return response.data;
+  },
 };
