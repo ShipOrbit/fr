@@ -34,7 +34,9 @@ export interface ShippingNeedsData {
   average_ftl: string;
   trailer_type: string[];
 }
-
+export interface SearchCitiesData {
+  name_prefix: string;
+}
 export interface CountryRegionsData {
   search_Term: string;
 }
