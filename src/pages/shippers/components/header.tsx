@@ -10,16 +10,18 @@ const Header: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <span className="text-2xl font-bold text-blue-600">
-                ShipOrbit
-              </span>
-              <span className="text-gray-500 ml-2">
-                for {user?.company?.name}
-              </span>
+          <Link to="/dashboard">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <span className="text-2xl font-bold text-blue-600">
+                  ShipOrbit
+                </span>
+                <span className="text-gray-500 ml-2">
+                  for {user?.company?.name}
+                </span>
+              </div>
             </div>
-          </div>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:block">
