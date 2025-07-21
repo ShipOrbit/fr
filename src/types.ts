@@ -47,7 +47,16 @@ export interface DistancePriceData {
 }
 
 export interface GeoDBCity {
-  id: 489;
+  id: number;
+  type: "CITY";
+  city: string;
+  name: string;
+  country: string;
+  countryCode: string;
+  region: string;
+}
+export interface GeoDBRegion {
+  id: number;
   wikiDataId: string;
   name: string;
   countryCode: string;
