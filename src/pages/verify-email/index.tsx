@@ -106,7 +106,7 @@ const VerifyEmail: React.FC = () => {
                 {verifySuccess && (
                   <Link
                     className="mx-auto py-2 px-4 text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
-                    to="/dashboard"
+                    to="/login"
                   >
                     Now Go To Login
                   </Link>
