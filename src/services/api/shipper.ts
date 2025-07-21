@@ -2,7 +2,11 @@ import type { AxiosResponse } from "axios";
 import api from ".";
 import type {
   CountryRegionsData,
+  DistancePriceData,
   GeoDBCity,
+  GeoDBRegion,
+  PriceCalculation,
+  SearchCitiesData,
   ShippingNeedsData,
 } from "../../types";
 
