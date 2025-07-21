@@ -40,6 +40,12 @@ export interface SearchCitiesData {
 export interface CountryRegionsData {
   search_Term: string;
 }
+export interface DistancePriceData {
+  pickup_location: number;
+  dropoff_location: number;
+  equipment: string;
+}
+
 export interface GeoDBCity {
   id: 489;
   wikiDataId: string;
