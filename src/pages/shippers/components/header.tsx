@@ -1,10 +1,13 @@
 import React from "react";
 import { ChevronDown, Menu } from "lucide-react";
 import { useAuth } from "../../../hooks/use-auth";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
+import { cn } from "../../../utils/cn";
 
 const Header: React.FC = () => {
   const { user } = useAuth();
+  const location = useLocation();
+
   return (
     <nav className="bg-white shadow-lg border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -28,19 +31,31 @@ const Header: React.FC = () => {
             <div className="ml-10 flex items-baseline space-x-8">
               <Link
                 to="/dashboard"
-                className="text-blue-600 hover:text-blue-700 px-3 py-2 rounded-md text-sm font-medium border-b-2 border-blue-600"
+                className={cn(
+                  "text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium",
+                  location.pathname.includes("dashboard") &&
+                    "text-blue-600 hover:text-blue-700 border-b-2 border-blue-600"
+                )}
               >
                 Dashboard
               </Link>
               <Link
                 to="/create-shipment"
-                className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium"
+                className={cn(
+                  "text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium",
+                  location.pathname.includes("create-shipment") &&
+                    "text-blue-600 hover:text-blue-700 border-b-2 border-blue-600"
+                )}
               >
                 Create Shipment
               </Link>
               <Link
                 to="/billing"
-                className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium"
+                className={cn(
+                  "text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium",
+                  location.pathname.includes("billing") &&
+                    "text-blue-600 hover:text-blue-700 border-b-2 border-blue-600"
+                )}
               >
                 Billing
               </Link>
