@@ -35,7 +35,9 @@ const VerifyEmail: React.FC = () => {
         setIsVerifying(false);
       }
     };
-    verifyEmail();
+    if (token) {
+      verifyEmail();
+    }
   }, [token]);
 
   return (
