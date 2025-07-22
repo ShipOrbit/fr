@@ -48,12 +48,11 @@ export interface DistancePriceData {
 
 export interface GeoDBCity {
   id: number;
-  type: "CITY";
-  city: string;
   name: string;
-  country: string;
   countryCode: string;
-  region: string;
+  regionCode: string;
+  latitude: number;
+  longitude: number;
 }
 export interface GeoDBRegion {
   id: number;
