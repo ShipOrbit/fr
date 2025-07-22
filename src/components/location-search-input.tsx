@@ -7,17 +7,11 @@ import {
   type InputHTMLAttributes,
 } from "react";
 import { cn } from "../utils/cn";
-
-export type City = {
-  id: number;
-  name: string;
-  countryCode?: string;
-  regionCode?: string;
-};
+import type { GeoDBCity } from "../types";
 
 type LocationSearchInputProps = {
-  onSelect: (city: City) => void;
-  getCities: (search: string) => Promise<City[]>;
+  onSelect: (city: GeoDBCity) => void;
+  getCities: (search: string) => Promise<GeoDBCity[]>;
   errors?: string;
   label?: string;
 } & Omit<InputHTMLAttributes<HTMLInputElement>, "onSelect">;
@@ -25,7 +19,7 @@ type LocationSearchInputProps = {
 export const LocationSearchInput = memo(
   ({ onSelect, getCities, errors, ...props }: LocationSearchInputProps) => {
     const [value, setValue] = useState("");
-    const [cities, setCities] = useState<City[]>([]);
+    const [cities, setCities] = useState<GeoDBCity[]>([]);
     const [showDropdown, setShowDropdown] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const [loading, setLoading] = useState(false);
@@ -43,7 +37,17 @@ export const LocationSearchInput = memo(
         try {
           setLoading(true);
           const result = await getCities(value);
-          setCities(result);
+          const refineResult = result.map(
+            ({ id, name, countryCode, regionCode, latitude, longitude }) => ({
+              id,
+              name,
+              countryCode,
+              regionCode,
+              latitude,
+              longitude,
+            })
+          );
+          setCities(refineResult);
         } finally {
           setLoading(false);
         }
