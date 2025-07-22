@@ -64,4 +64,11 @@ export const shipperApi = {
     );
     return response.data;
   },
+
+  getShipmentById: async ({ id }: Pick<Shipment, "id">) => {
+    const response: AxiosResponse<Shipment> = await api.get(
+      `/shipper/shipments/${id}`
+    );
+    return response.data;
+  },
 };
