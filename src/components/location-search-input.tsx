@@ -37,17 +37,7 @@ export const LocationSearchInput = memo(
         try {
           setLoading(true);
           const result = await getCities(value);
-          const refineResult = result.map(
-            ({ id, name, countryCode, regionCode, latitude, longitude }) => ({
-              id,
-              name,
-              countryCode,
-              regionCode,
-              latitude,
-              longitude,
-            })
-          );
-          setCities(refineResult);
+          setCities(result);
         } finally {
           setLoading(false);
         }
