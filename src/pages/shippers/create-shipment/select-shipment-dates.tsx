@@ -11,51 +11,99 @@ import { shipperApi } from "../../../services/api/shipper";
 import type { GeoDBCity, PriceCalculation } from "../../../types";
 import Layout from "../components/layout";
 import { cn } from "../../../utils/cn";
+import z from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "react-router";
 
 const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+const shipmentSchema = z.object({
+  equipment: z.string().nonempty(),
+  pickup_location: z.number("You must select an option"),
+  dropoff_location: z.number("You must select an option"),
+  pickup_date: z.string().min(10, "Pick-up date is required"),
+  dropoff_date: z.string().min(10),
+});
+
+export type ShipmentFormValues = z.infer<typeof shipmentSchema>;
+
 const SelectDatePage: React.FC = () => {
-  const [equipment, setEquipment] = useState("dryVan");
+  const navigate = useNavigate();
+  const [equipment] = useState("dryVan");
   const [pickupLocation, setPickupLocation] = useState<GeoDBCity>();
   const [dropoffLocation, setDropoffLocation] = useState<GeoDBCity>();
-  const [pickupDate, setPickupDate] = useState("");
-  const [dropoffDate, setDropoffDate] = useState("");
   const [showEquipmentDropdown, setShowEquipmentDropdown] = useState(false);
   const [distancePrice, setDistancePrice] = useState<PriceCalculation | null>(
     null
   );
   const [isLoading, setIsLoading] = useState(false);
   const today = useMemo(() => new Date().toISOString().split("T")[0], []);
+  const {
+    handleSubmit,
+    setValue,
+    register,
+    watch,
+    clearErrors,
+    formState: { errors },
+  } = useForm<ShipmentFormValues>({
+    resolver: zodResolver(shipmentSchema),
+    defaultValues: {
+      equipment: "dryVan",
+      pickup_location: undefined,
+      dropoff_location: undefined,
+      pickup_date: "",
+      dropoff_date: "",
+    },
+  });
+  const onPickLocationSelect = useCallback(
+    (city: GeoDBCity) => {
+      setPickupLocation(city);
+      setValue("pickup_location", city.id);
+      clearErrors("pickup_location");
+    },
+    [clearErrors, setValue]
+  );
 
-  const onPickLocationSelect = useCallback((city: GeoDBCity) => {
-    setPickupLocation(city);
-  }, []);
+  const onDropoffLocationSelect = useCallback(
+    (city: GeoDBCity) => {
+      setDropoffLocation(city);
+      setValue("dropoff_location", city.id);
+      clearErrors("dropoff_location");
+    },
+    [clearErrors, setValue]
+  );
 
-  const onDropoffLocationSelect = useCallback((city: GeoDBCity) => {
-    setDropoffLocation(city);
-  }, []);
+  const onSubmit = async (data: ShipmentFormValues) => {
+    try {
+      const shipment = await shipperApi.createShipment({
+        equipment: data.equipment,
+        pickup: { city: data.pickup_location, date: data.pickup_date },
+        dropoff: { city: data.dropoff_location, date: data.dropoff_date },
+      });
+      navigate(`/shipment/${shipment.id}/appointment`);
+    } catch (error) {
+      console.log({ error });
+    }
+  };
+
+  const pickupDate = watch("pickup_date");
+  const dropoffDate = watch("dropoff_date");
+
+  useEffect(() => {
+    if (pickupDate && distancePrice?.min_transit_time) {
+      const pickup = new Date(pickupDate);
+      const dropoff = new Date(pickup);
+      dropoff.setDate(pickup.getDate() + distancePrice.min_transit_time);
+      const formattedDate = dropoff.toISOString().split("T")[0];
+      setValue("dropoff_date", formattedDate);
+    }
+  }, [distancePrice, setValue, pickupDate]);
 
   const getCities = useCallback(
     (search: string) => shipperApi.searchCities({ name_prefix: search }),
     []
   );
-
-  useEffect(() => {
-    if (pickupDate && distancePrice?.min_transit_time) {
-      const pickup = new Date(pickupDate);
-
-      // Calculate dropoff date by adding transit days
-      const dropoff = new Date(pickup);
-      dropoff.setDate(pickup.getDate() + distancePrice.min_transit_time);
-
-      // Format as YYYY-MM-DD
-      const formattedDate = dropoff.toISOString().split("T")[0];
-      setDropoffDate(formattedDate);
-    } else {
-      setPickupDate("");
-      setDropoffDate("");
-    }
-  }, [pickupDate, distancePrice]);
 
   useEffect(() => {
     const fetchDistancePrice = async () => {
@@ -77,10 +125,7 @@ const SelectDatePage: React.FC = () => {
         setIsLoading(false);
       }
     };
-
-    const debounceTimer = setTimeout(() => fetchDistancePrice(), 1000);
-
-    return () => clearTimeout(debounceTimer);
+    fetchDistancePrice();
   }, [pickupLocation, dropoffLocation, equipment]);
 
   const calendarDays = Array.from({ length: 21 }, (_, i) => {
@@ -133,7 +178,7 @@ const SelectDatePage: React.FC = () => {
                     <div className="py-1">
                       <button
                         onClick={() => {
-                          setEquipment("dryVan");
+                          setValue("equipment", "dryVan");
                           setShowEquipmentDropdown(false);
                         }}
                         className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
@@ -142,7 +187,7 @@ const SelectDatePage: React.FC = () => {
                       </button>
                       <button
                         onClick={() => {
-                          setEquipment("reefer");
+                          setValue("equipment", "reefer");
                           setShowEquipmentDropdown(false);
                         }}
                         className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
@@ -157,7 +202,7 @@ const SelectDatePage: React.FC = () => {
           </div>
 
           <div className="p-6">
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
               {/* Location and Date Inputs */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div>
@@ -170,6 +215,11 @@ const SelectDatePage: React.FC = () => {
                     onSelect={onPickLocationSelect}
                     getCities={getCities}
                   />
+                  {errors.pickup_location && (
+                    <p className="text-red-500 text-sm">
+                      {errors.pickup_location.message}
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -182,6 +232,11 @@ const SelectDatePage: React.FC = () => {
                     onSelect={onDropoffLocationSelect}
                     getCities={getCities}
                   />
+                  {errors.dropoff_location && (
+                    <p className="text-red-500 text-sm">
+                      {errors.dropoff_location.message}
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -190,12 +245,16 @@ const SelectDatePage: React.FC = () => {
                   </label>
                   <input
                     type="date"
-                    value={pickupDate}
                     disabled={!distancePrice}
                     min={today}
-                    onChange={(e) => setPickupDate(e.target.value)}
+                    {...register("pickup_date")}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                   />
+                  {errors.pickup_date && (
+                    <p className="text-red-500 text-sm">
+                      {errors.pickup_date.message}
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -205,8 +264,9 @@ const SelectDatePage: React.FC = () => {
                   <input
                     type="date"
                     disabled
-                    value={dropoffDate}
-                    onChange={(e) => setDropoffDate(e.target.value)}
+                    // value={dropoffDate}
+                    // onChange={(e) => setDropoffDate(e.target.value)}
+                    {...register("dropoff_date")}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                   />
                 </div>
@@ -222,8 +282,8 @@ const SelectDatePage: React.FC = () => {
                     type="button"
                     className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 transition-colors"
                     onClick={() => {
-                      setPickupDate("");
-                      setDropoffDate("");
+                      setValue("pickup_date", "");
+                      setValue("dropoff_date", "");
                     }}
                   >
                     <RotateCcw className="h-4 w-4" />
@@ -257,7 +317,7 @@ const SelectDatePage: React.FC = () => {
                       return (
                         <button
                           key={date}
-                          onClick={() => setPickupDate(date)}
+                          onClick={() => setValue("pickup_date", date)}
                           type="button"
                           disabled={!distancePrice}
                           className={cn(
