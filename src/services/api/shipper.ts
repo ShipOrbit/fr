@@ -2,11 +2,14 @@ import type { AxiosResponse } from "axios";
 import api from ".";
 import type {
   CountryRegionsData,
+  CreateShipmentData,
   DistancePriceData,
   GeoDBCity,
   GeoDBRegion,
+  GetShipmentsResult,
   PriceCalculation,
   SearchCitiesData,
+  Shipment,
   ShippingNeedsData,
 } from "../../types";
 
@@ -41,6 +44,23 @@ export const shipperApi = {
     const response: AxiosResponse<PriceCalculation> = await api.post(
       "/shipper/distance-price/",
       data
+    );
+    return response.data;
+  },
+
+  //Create shipment
+  createShipment: async (data: CreateShipmentData) => {
+    const response: AxiosResponse<Shipment> = await api.post(
+      "/shipper/shipments/",
+      data
+    );
+    return response.data;
+  },
+
+  //Get shipments
+  getShipments: async () => {
+    const response: AxiosResponse<GetShipmentsResult> = await api.get(
+      "/shipper/shipments/"
     );
     return response.data;
   },
