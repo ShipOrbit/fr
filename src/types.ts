@@ -105,3 +105,10 @@ export interface RegistrationState {
   isLoading: boolean;
   errors: FormErrors;
 }
+export interface CreateShipmentData {
+  equipment: string;
+  pickup_location: number;
+  dropoff_location: number;
+  pickup_date: string;
+  dropoff_date: string;
+}
