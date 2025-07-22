@@ -49,8 +49,9 @@ export interface DistancePriceData {
 export interface GeoDBCity {
   id: number;
   name: string;
-  countryCode: string;
-  regionCode: string;
+  city: string;
+  country_code: string;
+  region_code: string;
   latitude: number;
   longitude: number;
 }
