@@ -15,6 +15,8 @@ import type { PriceCalculation } from "../../../types";
 import Layout from "../components/layout";
 import { cn } from "../../../utils/cn";
 
+const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
 const SelectDatePage: React.FC = () => {
   const [equipment, setEquipment] = useState("dryVan");
   const [pickupLocation, setPickupLocation] = useState<number>();
