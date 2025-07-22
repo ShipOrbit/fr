@@ -113,7 +113,7 @@ export const LocationSearchInput = memo(
                   setIsSelecting(true); // Flag that user is selecting from dropdown
                   onSelect(city);
                   setValue(
-                    `${city.name}, ${city.regionCode || city.countryCode}`
+                    `${city.name}, ${city.region_code || city.country_code}`
                   );
                   setShowDropdown(false);
                 }}
@@ -121,7 +121,7 @@ export const LocationSearchInput = memo(
               >
                 <div className="font-medium text-gray-900">{city.name}</div>
                 <div className="text-sm text-gray-500">
-                  {city.name}, {city.regionCode || city.countryCode}
+                  {city.name}, {city.region_code || city.country_code}
                 </div>
               </button>
             ))}
