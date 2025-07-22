@@ -108,8 +108,27 @@ export interface RegistrationState {
 }
 export interface CreateShipmentData {
   equipment: string;
-  pickup_location: number;
-  dropoff_location: number;
-  pickup_date: string;
-  dropoff_date: string;
+  pickup: { city: number; date: string };
+  dropoff: { city: number; date: string };
+}
+
+export interface Shipment {
+  id: string;
+  status: "unfinished" | "inprogress" | "upcoming" | "past";
+  finalizeDate: string;
+  pickup: {
+    city: GeoDBCity;
+    state: string;
+    date: string;
+  };
+  dropoff: {
+    city: GeoDBCity;
+    state: string;
+    date: string;
+  };
+}
+
+export interface GetShipmentsResult {
+  results: Shipment[];
+  count: number;
 }
