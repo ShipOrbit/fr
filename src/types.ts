@@ -41,8 +41,8 @@ export interface CountryRegionsData {
   search_Term: string;
 }
 export interface DistancePriceData {
-  pickup_location: number;
-  dropoff_location: number;
+  pickup_location: GeoDBCity;
+  dropoff_location: GeoDBCity;
   equipment: string;
 }
 

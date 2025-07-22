@@ -6,12 +6,9 @@ import {
   Truck,
 } from "lucide-react";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  LocationSearchInput,
-  type City,
-} from "../../../components/location-search-input";
+import { LocationSearchInput } from "../../../components/location-search-input";
 import { shipperApi } from "../../../services/api/shipper";
-import type { PriceCalculation } from "../../../types";
+import type { GeoDBCity, PriceCalculation } from "../../../types";
 import Layout from "../components/layout";
 import { cn } from "../../../utils/cn";
 
@@ -19,8 +16,8 @@ const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 const SelectDatePage: React.FC = () => {
   const [equipment, setEquipment] = useState("dryVan");
-  const [pickupLocation, setPickupLocation] = useState<number>();
-  const [dropoffLocation, setDropoffLocation] = useState<number>();
+  const [pickupLocation, setPickupLocation] = useState<GeoDBCity>();
+  const [dropoffLocation, setDropoffLocation] = useState<GeoDBCity>();
   const [pickupDate, setPickupDate] = useState("");
   const [dropoffDate, setDropoffDate] = useState("");
   const [showEquipmentDropdown, setShowEquipmentDropdown] = useState(false);
@@ -30,12 +27,12 @@ const SelectDatePage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const today = useMemo(() => new Date().toISOString().split("T")[0], []);
 
-  const onPickLocationSelect = useCallback((city: City) => {
-    setPickupLocation(city.id);
+  const onPickLocationSelect = useCallback((city: GeoDBCity) => {
+    setPickupLocation(city);
   }, []);
 
-  const onDropoffLocationSelect = useCallback((city: City) => {
-    setDropoffLocation(city.id);
+  const onDropoffLocationSelect = useCallback((city: GeoDBCity) => {
+    setDropoffLocation(city);
   }, []);
 
   const getCities = useCallback(
@@ -86,7 +83,6 @@ const SelectDatePage: React.FC = () => {
     return () => clearTimeout(debounceTimer);
   }, [pickupLocation, dropoffLocation, equipment]);
 
-  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const calendarDays = Array.from({ length: 21 }, (_, i) => {
     const date = new Date();
     date.setDate(date.getDate() + i);
@@ -267,8 +263,7 @@ const SelectDatePage: React.FC = () => {
                           className={cn(
                             "h-10 w-10 mx-auto text-sm rounded-lg transition-colors",
                             {
-                              "bg-blue-600 text-white": isPickup,
-                              "bg-green-500 text-white": isDropoff,
+                              "bg-blue-600 text-white": isPickup || isDropoff,
                               "bg-blue-100 text-blue-800": isInRange,
                               "hover:bg-blue-50 hover:text-blue-600":
                                 !isPickup && !isDropoff && !isInRange,
