@@ -1,19 +1,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, MapPin, Package, Truck } from "lucide-react";
+import { Loader2, MapPin, Package } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import Layout from "../../components/layout";
-import { shipmentSchema, type ShipmentFormValues } from "./schema";
 import { useParams } from "react-router";
 import { shipperApi } from "../../../../services/api/shipper";
 import type { Shipment } from "../../../../types";
 import normalizeDefaultValue from "../../../../utils/normalize-default-value";
-
-// Mock data for shipment details (would come from props/state in real app)
-const mockShipment = {
-  basePrice: 1250,
-  driverAssist: false,
-};
+import Layout from "../../components/layout";
+import { shipmentSchema, type ShipmentFormValues } from "./schema";
 
 const ShipmentFinalizing: React.FC = () => {
   const [shipment, setShipment] = useState<Shipment | null>(null);
@@ -339,52 +333,46 @@ function ShipmentFinalizeForm({ shipment }: { shipment: Shipment }) {
 
         {/* Price Summary Sidebar */}
         <div className="lg:col-span-1">
-          <div className="bg-white shadow-lg rounded-lg overflow-hidden sticky top-8">
-            <div className="px-6 py-4 bg-gradient-to-r from-blue-600 to-blue-700">
-              <div className="flex items-center justify-between text-white">
-                <div className="flex items-center space-x-2">
-                  <Truck className="h-5 w-5" />
-                  <h3 className="text-lg font-semibold">Total</h3>
-                </div>
-                <div className="text-2xl font-bold">
-                  ${shipment.base_price?.toLocaleString()}
-                </div>
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-8">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-gray-900">Total</h3>
+              <div className="text-2xl font-bold text-blue-600">
+                ${shipment.total_price}
               </div>
             </div>
 
-            <div className="px-6 py-4 space-y-4">
-              <div className="flex justify-between items-center py-2">
+            <div className="space-y-4 mb-6">
+              <div className="flex items-center justify-between">
                 <span className="text-gray-600">Base rate</span>
-                <span className="font-medium">
-                  ${mockShipment.basePrice?.toLocaleString()}
-                </span>
+                <span className="font-medium">${shipment?.base_price}</span>
               </div>
-
-              {mockShipment.driverAssist && (
-                <div className="flex justify-between items-center py-2 border-t border-gray-100">
+              {shipment.driver_assist && (
+                <div className="flex items-center justify-between">
                   <span className="text-gray-600">Driver assist</span>
-                  <span className="font-medium">$150</span>
+                  <span className="font-medium">
+                    ${shipment.driver_assist_fee}
+                  </span>
                 </div>
               )}
+            </div>
 
-              <div className="pt-4 space-y-3">
-                <button
-                  type="button"
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                >
-                  Finalize shipment
-                </button>
-                <button
-                  type="submit"
-                  className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-4 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-                >
-                  {loading ? (
-                    <Loader2 className="animate-spin" />
-                  ) : (
-                    "Save and finish later"
-                  )}
-                </button>
-              </div>
+            <div className="pt-4 space-y-3">
+              <button
+                type="button"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              >
+                Finalize shipment
+              </button>
+              <button
+                type="submit"
+                className="w-full flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-4 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+              >
+                {loading ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  "Save and finish later"
+                )}
+              </button>
             </div>
           </div>
         </div>
