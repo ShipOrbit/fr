@@ -12,10 +12,11 @@ import {
   Zap,
 } from "lucide-react";
 import Layout from "../../components/layout";
+import { Link } from "react-router";
 
 const AboutPage = () => {
   const HeroSection = () => (
-    <section className="min-h-screen flex items-center bg-gradient-to-br from-blue-50 to-blue-100">
+    <section className="min-h-screen flex items-center">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="text-left">
@@ -408,13 +409,19 @@ const AboutPage = () => {
             seeking profitable loads, ShipOrbit is here to help you succeed.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-blue-600 px-8 py-4 rounded-full hover:bg-blue-50 transition-all transform hover:scale-105 flex items-center justify-center group cursor-pointer">
+            <Link
+              to="/sign-up"
+              className="bg-white text-blue-600 px-8 py-4 rounded-full hover:bg-blue-50 transition-all transform hover:scale-105 flex items-center justify-center group cursor-pointer"
+            >
               Start Shipping
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-            </button>
-            <button className="border-2 border-white text-white px-8 py-4 rounded-full hover:bg-white hover:text-blue-600 transition-all cursor-pointer">
+            </Link>
+            <Link
+              to=""
+              className="border-2 border-white text-white px-8 py-4 rounded-full hover:bg-white hover:text-blue-600 transition-all cursor-pointer"
+            >
               Join as Carrier
-            </button>
+            </Link>
           </div>
         </div>
       </div>
