@@ -6,14 +6,7 @@ import type { Shipment } from "../../types";
 import { cn } from "../../utils/cn";
 import Layout from "./components/layout";
 import ShipmentCard from "./create-shipment/shipment-card";
-
-const getGreeting = () => {
-  const hour = new Date().getHours();
-
-  if (hour < 12) return "Good morning";
-  if (hour < 18) return "Good afternoon";
-  return "Good evening";
-};
+import getGreeting from "../../utils/get-greeting";
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
