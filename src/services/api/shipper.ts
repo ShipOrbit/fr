@@ -4,6 +4,7 @@ import type {
   CountryRegionsData,
   CreateShipmentData,
   DistancePriceData,
+  Facility,
   GeoDBCity,
   GeoDBRegion,
   GetShipmentsResult,
@@ -11,6 +12,7 @@ import type {
   SearchCitiesData,
   Shipment,
   ShippingNeedsData,
+  UpdateAppointmentData,
 } from "../../types";
 
 export const shipperApi = {
@@ -68,6 +70,17 @@ export const shipperApi = {
   getShipmentById: async ({ id }: Pick<Shipment, "id">) => {
     const response: AxiosResponse<Shipment> = await api.get(
       `/shipper/shipments/${id}`
+    );
+    return response.data;
+  },
+
+  updateShipmentAppointment: async (
+    id: string,
+    data: UpdateAppointmentData
+  ) => {
+    const response: AxiosResponse<Facility> = await api.patch(
+      `/shipper/shipments/${id}/appointment/`,
+      data
     );
     return response.data;
   },
