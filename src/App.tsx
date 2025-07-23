@@ -46,7 +46,7 @@ const router = createBrowserRouter([
     element: <ShipperDashboard />,
   },
   {
-    path: "/shipment-details",
+    path: "/shipments/:id",
     element: <ShipmentDetails />,
   },
   {
@@ -54,11 +54,11 @@ const router = createBrowserRouter([
     element: <SelectDatePage />,
   },
   {
-    path: "/shipment/:id/appointment",
+    path: "/shipments/:id/appointment",
     element: <CreateShipmentAppointment />,
   },
   {
-    path: "/shipment/:id/finalizing",
+    path: "/shipments/:id/finalizing",
     element: <ShipmentFinalizing />,
   },
   {

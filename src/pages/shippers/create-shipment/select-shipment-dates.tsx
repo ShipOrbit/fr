@@ -81,7 +81,7 @@ const SelectDatePage: React.FC = () => {
         pickup: { city: data.pickup_location, date: data.pickup_date },
         dropoff: { city: data.dropoff_location, date: data.dropoff_date },
       });
-      navigate(`/shipment/${shipment.id}/appointment`);
+      navigate(`/shipments/${shipment.id}/appointment`);
     } catch (error) {
       console.log({ error });
     }
