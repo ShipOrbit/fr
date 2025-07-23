@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { ChevronDown, Menu } from "lucide-react";
 import { useAuth } from "../../../hooks/use-auth";
-import { Link, useLocation } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { cn } from "../../../utils/cn";
 
 const Header: React.FC = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const location = useLocation();
   const [dropdown, setDropdown] = useState(false);
 
@@ -33,7 +34,7 @@ const Header: React.FC = () => {
               <Link
                 to="/dashboard"
                 className={cn(
-                  "text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium",
+                  "text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium",
                   location.pathname.includes("dashboard") &&
                     "text-blue-600 hover:text-blue-700 border-b-2 border-blue-600"
                 )}
@@ -43,7 +44,7 @@ const Header: React.FC = () => {
               <Link
                 to="/create-shipment"
                 className={cn(
-                  "text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium",
+                  "text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium",
                   location.pathname.includes("create-shipment") &&
                     "text-blue-600 hover:text-blue-700 border-b-2 border-blue-600"
                 )}
@@ -53,7 +54,7 @@ const Header: React.FC = () => {
               <Link
                 to="/billing"
                 className={cn(
-                  "text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium",
+                  "text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium",
                   location.pathname.includes("billing") &&
                     "text-blue-600 hover:text-blue-700 border-b-2 border-blue-600"
                 )}
