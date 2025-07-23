@@ -469,7 +469,9 @@ const CreateShipmentAppointment: React.FC = () => {
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-bold text-gray-900">Total</h3>
                 <div className="text-2xl font-bold text-blue-600">
-                  ${shipment?.base_price + (shipment.driver_assist ? 150 : 0)}
+                  $
+                  {parseFloat(shipment?.base_price) +
+                    (shipment.driver_assist ? 150 : 0)}
                 </div>
               </div>
 
