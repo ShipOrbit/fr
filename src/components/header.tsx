@@ -1,9 +1,11 @@
 import { Menu, Package, X } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
+import { useAuth } from "../hooks/use-auth";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const auth = useAuth();
 
   return (
     <nav className="bg-gradient-to-r from-blue-900 to-blue-800 shadow-lg sticky top-0 z-50">
@@ -55,26 +57,43 @@ const Header = () => {
             </div>
           </div>
 
-          <div className="hidden md:flex items-center space-x-4">
-            <Link
-              to="/about"
-              className="text-white hover:text-blue-200 transition-colors"
-            >
-              About
-            </Link>
-            <Link
-              to="/login"
-              className="text-white hover:text-blue-200 transition-colors"
-            >
-              Login
-            </Link>
-            <Link
-              to="/sign-up"
-              className="bg-white text-blue-600 px-4 py-2 rounded-full hover:bg-blue-50 transition-colors font-medium cursor-pointer"
-            >
-              Sign up
-            </Link>
-          </div>
+          {auth.isAuthenticated && auth.user?.is_email_verified ? (
+            <div className="hidden md:flex items-center space-x-4">
+              <Link
+                to="/about"
+                className="text-white hover:text-blue-200 transition-colors"
+              >
+                About
+              </Link>
+              <Link
+                to="/dashboard"
+                className="text-white hover:text-blue-200 transition-colors"
+              >
+                Dashboard
+              </Link>
+            </div>
+          ) : (
+            <div className="hidden md:flex items-center space-x-4">
+              <Link
+                to="/about"
+                className="text-white hover:text-blue-200 transition-colors"
+              >
+                About
+              </Link>
+              <Link
+                to="/login"
+                className="text-white hover:text-blue-200 transition-colors"
+              >
+                Login
+              </Link>
+              <Link
+                to="/sign-up"
+                className="bg-white text-blue-600 px-4 py-2 rounded-full hover:bg-blue-50 transition-colors font-medium cursor-pointer"
+              >
+                Sign up
+              </Link>
+            </div>
+          )}
 
           <div className="md:hidden">
             <button
