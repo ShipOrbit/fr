@@ -13,6 +13,7 @@ import type {
   Shipment,
   ShippingNeedsData,
   UpdateAppointmentData,
+  updateFinalizingData,
 } from "../../types";
 
 export const shipperApi = {
@@ -80,6 +81,13 @@ export const shipperApi = {
   ) => {
     const response: AxiosResponse<Facility> = await api.patch(
       `/shipper/shipments/${id}/appointment/`,
+      data
+    );
+    return response.data;
+  },
+  updateShipmentFinalizing: async (id: string, data: updateFinalizingData) => {
+    const response: AxiosResponse<Facility> = await api.patch(
+      `/shipper/shipments/${id}/finalizing/`,
       data
     );
     return response.data;
