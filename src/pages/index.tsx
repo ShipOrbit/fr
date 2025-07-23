@@ -7,6 +7,7 @@ import {
   Star,
 } from "lucide-react";
 import Layout from "../components/layout";
+import { Link } from "react-router";
 
 const ShipOrbitLanding = () => {
   const HeroSection = () => (
@@ -23,13 +24,19 @@ const ShipOrbitLanding = () => {
               connecting shippers and carriers worldwide.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <button className="bg-blue-600 text-white px-8 py-4 rounded-full hover:bg-blue-700 transition-all transform hover:scale-105 flex items-center justify-center group cursor-pointer">
+              <Link
+                to="/shippers"
+                className="bg-blue-600 text-white px-8 py-4 rounded-full hover:bg-blue-700 transition-all transform hover:scale-105 flex items-center justify-center group cursor-pointer"
+              >
                 Ship with OrbitLogistics
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:tra-blue-x-1 transition-transform" />
-              </button>
-              <button className="border-2 border-blue-600 text-blue-600 px-8 py-4 rounded-full hover:bg-blue-600 hover:text-white transition-all cursor-pointer">
+              </Link>
+              <Link
+                to="/carriers"
+                className="border-2 border-blue-600 text-blue-600 px-8 py-4 rounded-full hover:bg-blue-600 hover:text-white transition-all cursor-pointer"
+              >
                 Drive with OrbitLogistics
-              </button>
+              </Link>
             </div>
           </div>
           <div className="relative">
@@ -64,9 +71,12 @@ const ShipOrbitLanding = () => {
                 of everyone in our network. Our advanced monitoring systems
                 ensure peace of mind for all stakeholders.
               </p>
-              <button className="bg-white text-gray-900 px-8 py-3 rounded-full hover:bg-gray-100 transition-colors font-medium cursor-pointer">
+              <Link
+                to="/safety"
+                className="bg-white text-gray-900 px-8 py-3 rounded-full hover:bg-gray-100 transition-colors font-medium cursor-pointer"
+              >
                 Learn More
-              </button>
+              </Link>
             </div>
             <div className="relative">
               <img
@@ -137,7 +147,7 @@ const ShipOrbitLanding = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          <div className="group cursor-pointer">
+          <Link to="/carriers" className="group cursor-pointer">
             <div className="relative rounded-2xl overflow-hidden shadow-lg group-hover:shadow-2xl transition-shadow">
               <img
                 src="https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
@@ -152,16 +162,13 @@ const ShipOrbitLanding = () => {
             <p className="text-gray-600 mb-4">
               Smart load matching. Maximum efficiency.
             </p>
-            <a
-              href="#carriers"
-              className="text-blue-600 hover:text-blue-700 font-medium flex items-center group"
-            >
+            <span className="text-blue-600 hover:text-blue-700 font-medium flex items-center group">
               Learn more
               <ChevronRight className="ml-1 h-4 w-4 group-hover:tra-blue-x-1 transition-transform" />
-            </a>
-          </div>
+            </span>
+          </Link>
 
-          <div className="group cursor-pointer">
+          <Link to="/shippers" className="group cursor-pointer">
             <div className="relative rounded-2xl overflow-hidden shadow-lg group-hover:shadow-2xl transition-shadow">
               <img
                 src="https://images.unsplash.com/photo-1586953208448-b95a79798f07?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
@@ -183,7 +190,7 @@ const ShipOrbitLanding = () => {
               Learn more
               <ChevronRight className="ml-1 h-4 w-4 group-hover:tra-blue-x-1 transition-transform" />
             </a>
-          </div>
+          </Link>
         </div>
       </div>
     </section>
@@ -258,7 +265,7 @@ const ShipOrbitLanding = () => {
         }}
       ></div>
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl">
+        <div className="flex flex-col items-start max-w-2xl">
           <h2 className="text-4xl font-bold text-white mb-6">
             "Instant access to global shipping capacity"
           </h2>
@@ -266,10 +273,13 @@ const ShipOrbitLanding = () => {
             Our platform empowers businesses with the confidence and capability
             to move freight efficiently across any distance.
           </p>
-          <button className="bg-white text-blue-600 px-8 py-3 rounded-full hover:bg-gray-100 transition-colors font-medium flex items-center group cursor-pointer">
+          <Link
+            to="/sign-up"
+            className="bg-white text-blue-600 px-8 py-3 rounded-full hover:bg-gray-100 transition-colors font-medium flex items-center group cursor-pointer"
+          >
             Get Started Today
             <ArrowRight className="ml-2 h-5 w-5 group-hover:tra-blue-x-1 transition-transform" />
-          </button>
+          </Link>
         </div>
       </div>
     </section>
@@ -279,7 +289,7 @@ const ShipOrbitLanding = () => {
     <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div>
+          <div className="flex flex-col items-start">
             <h2 className="text-4xl font-bold text-gray-900 mb-6">
               Join thousands of satisfied customers
             </h2>
@@ -287,10 +297,13 @@ const ShipOrbitLanding = () => {
               Start managing your logistics operations with confidence.
               Available 24/7 for your scheduling needs.
             </p>
-            <button className="bg-blue-600 text-white px-8 py-4 rounded-full hover:bg-blue-700 transition-all transform hover:scale-105 flex items-center group cursor-pointer">
+            <Link
+              to="/sign-up"
+              className="bg-blue-600 text-white px-8 py-4 rounded-full hover:bg-blue-700 transition-all transform hover:scale-105 flex items-center group cursor-pointer"
+            >
               Start Shipping Now
               <ArrowRight className="ml-2 h-5 w-5 group-hover:tra-blue-x-1 transition-transform" />
-            </button>
+            </Link>
           </div>
           <div className="relative">
             <img
