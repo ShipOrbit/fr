@@ -1,72 +1,134 @@
-import { Building, Calendar, Clock, HandHeart, MapPin, X } from "lucide-react";
-import React, { useState, type PropsWithChildren } from "react";
+import {
+  Building,
+  Calendar,
+  Clock,
+  HandHeart,
+  Loader2,
+  MapPin,
+  X,
+} from "lucide-react";
+import React, { useEffect, useState, type PropsWithChildren } from "react";
 import Header from "../components/header";
+import { shipperApi } from "../../../services/api/shipper";
+import type { Facility, Shipment } from "../../../types";
+import { Link, useParams } from "react-router";
+import z from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-const CreateShipmentAppointment: React.FC = () => {
-  const [driverAssist, setDriverAssist] = useState(false);
-  const [showPickupModal, setShowPickupModal] = useState(false);
-  const [showDropoffModal, setShowDropoffModal] = useState(false);
+type ModalProps = {
+  isOpen: boolean;
+  title: string;
+  onClose: () => void;
+};
 
-  // Sample data - in real app would come from props or state
-  const shipmentData = {
-    pickup: {
-      city: "Los Angeles",
-      state: "CA",
-      date: "15/12/2024",
-    },
-    dropoff: {
-      city: "New York",
-      state: "NY",
-      date: "18/12/2024",
-    },
-    miles: 2789,
-    transitTime: 3,
-    basePrice: 2500,
-  };
+const facilitySchema = z.object({
+  facility_name: z.string().min(1, "Facility name is required"),
+  facility_address: z.string().min(1, "Address is required"),
+  zip_code: z.string().min(4, "Zip code is too short"),
+  scheduling_preference: z.enum([
+    "first_come",
+    "already_scheduled",
+    "to_be_scheduled",
+  ]),
+  contact_name: z.string().min(1, "Contact name is required"),
+  phone_number: z.string().min(7, "Invalid phone number"),
+  email: z.string().email("Invalid email address"),
+});
 
-  type ModalProps = {
-    isOpen: boolean;
-    title: string;
-    onClose: () => void;
-  };
+type FacilityFormData = z.infer<typeof facilitySchema>;
 
-  const Modal: React.FC<PropsWithChildren<ModalProps>> = ({
-    isOpen,
-    onClose,
-    title,
-    children,
-  }) => {
-    if (!isOpen) return null;
+const Modal: React.FC<PropsWithChildren<ModalProps>> = ({
+  isOpen,
+  onClose,
+  title,
+  children,
+}) => {
+  if (!isOpen) return null;
 
-    return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
-          <div className="flex items-center justify-between p-6 border-b border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              <X className="h-6 w-6" />
-            </button>
-          </div>
-          <div className="p-6">{children}</div>
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            <X className="h-6 w-6" />
+          </button>
         </div>
+        <div className="p-6">{children}</div>
       </div>
-    );
-  };
+    </div>
+  );
+};
 
-  const FacilityForm = ({ type }: { type: string; date: string }) => (
-    <form className="space-y-4">
+const FacilityForm = ({
+  type,
+  shipment,
+  updateShipmentState,
+  onClose,
+}: {
+  type: "pickup" | "dropoff";
+  date: string;
+  shipment: Shipment;
+  updateShipmentState: (facility: Facility) => void;
+  onClose: () => void;
+}) => {
+  const [loading, setLoading] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FacilityFormData>({
+    resolver: zodResolver(facilitySchema),
+    defaultValues: {
+      facility_name: shipment[type].facility_name,
+      facility_address: shipment[type].facility_address,
+      zip_code: shipment[type].zip_code,
+      scheduling_preference:
+        shipment[type].scheduling_preference || "first_come",
+      email: shipment[type].email,
+      contact_name: shipment[type].contact_name,
+      phone_number: shipment[type].phone_number,
+    },
+    disabled: loading,
+  });
+
+  const onSubmit: React.FormEventHandler<HTMLFormElement> = handleSubmit(
+    async (data) => {
+      try {
+        setLoading(true);
+        await shipperApi.updateShipmentAppointment(shipment.id, {
+          [type]: data,
+        });
+        updateShipmentState(data);
+        onClose();
+      } catch (error) {
+        console.log({ error });
+      } finally {
+        setLoading(false);
+      }
+    }
+  );
+
+  return (
+    <form onSubmit={onSubmit} className="space-y-4">
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Facility name or owner
         </label>
+        {/* <input type="text" placeholder="Enter facility name" /> */}
         <input
           type="text"
+          {...register("facility_name")}
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           placeholder="Enter facility name"
         />
+        {errors.facility_name && (
+          <p className="text-sm text-red-500">{errors.facility_name.message}</p>
+        )}
       </div>
 
       <div>
@@ -75,9 +137,15 @@ const CreateShipmentAppointment: React.FC = () => {
         </label>
         <input
           type="text"
+          {...register("facility_address")}
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           placeholder="Enter street address"
         />
+        {errors.facility_address && (
+          <p className="text-sm text-red-500">
+            {errors.facility_address.message}
+          </p>
+        )}
       </div>
 
       <div>
@@ -89,8 +157,8 @@ const CreateShipmentAppointment: React.FC = () => {
           className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50"
           value={
             type === "pickup"
-              ? shipmentData.pickup.city
-              : shipmentData.dropoff.city
+              ? shipment.pickup.city.name
+              : shipment.dropoff.city.name
           }
           disabled
         />
@@ -106,8 +174,8 @@ const CreateShipmentAppointment: React.FC = () => {
             className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50"
             value={
               type === "pickup"
-                ? shipmentData.pickup.state
-                : shipmentData.dropoff.state
+                ? shipment.pickup.city.region_code
+                : shipment.dropoff.city.region_code
             }
             disabled
           />
@@ -118,9 +186,13 @@ const CreateShipmentAppointment: React.FC = () => {
           </label>
           <input
             type="text"
+            {...register("zip_code")}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             placeholder="12345"
           />
+          {errors.zip_code && (
+            <p className="text-sm text-red-500">{errors.zip_code.message}</p>
+          )}
         </div>
       </div>
 
@@ -132,10 +204,8 @@ const CreateShipmentAppointment: React.FC = () => {
           <label className="flex items-center">
             <input
               type="radio"
-              name="scheduling"
-              value="first-come"
-              defaultChecked
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500"
+              value="first_come"
+              {...register("scheduling_preference")}
             />
             <span className="ml-2 text-sm text-gray-700">
               First come, first served
@@ -144,9 +214,8 @@ const CreateShipmentAppointment: React.FC = () => {
           <label className="flex items-center">
             <input
               type="radio"
-              name="scheduling"
-              value="scheduled"
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500"
+              value="already_scheduled"
+              {...register("scheduling_preference")}
             />
             <span className="ml-2 text-sm text-gray-700">
               Appointment already scheduled
@@ -155,9 +224,8 @@ const CreateShipmentAppointment: React.FC = () => {
           <label className="flex items-center">
             <input
               type="radio"
-              name="scheduling"
-              value="to-schedule"
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500"
+              value="to_be_scheduled"
+              {...register("scheduling_preference")}
             />
             <span className="ml-2 text-sm text-gray-700">
               Appointment to be scheduled by ShipOrbit
@@ -178,9 +246,15 @@ const CreateShipmentAppointment: React.FC = () => {
             </label>
             <input
               type="text"
+              {...register("contact_name")}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Contact name"
             />
+            {errors.contact_name && (
+              <p className="text-sm text-red-500">
+                {errors.contact_name.message}
+              </p>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -190,19 +264,30 @@ const CreateShipmentAppointment: React.FC = () => {
               </label>
               <input
                 type="tel"
+                {...register("phone_number")}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="(555) 123-4567"
               />
+              {errors.phone_number && (
+                <p className="text-sm text-red-500">
+                  {errors.phone_number.message}
+                </p>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Email address
               </label>
+
               <input
                 type="email"
+                {...register("email")}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="contact@facility.com"
               />
+              {errors.email && (
+                <p className="text-sm text-red-500">{errors.email.message}</p>
+              )}
             </div>
           </div>
         </div>
@@ -211,10 +296,7 @@ const CreateShipmentAppointment: React.FC = () => {
       <div className="flex justify-end space-x-3 pt-4">
         <button
           type="button"
-          onClick={() => {
-            setShowPickupModal(false);
-            setShowDropoffModal(false);
-          }}
+          onClick={onClose}
           className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
         >
           Cancel
@@ -223,11 +305,41 @@ const CreateShipmentAppointment: React.FC = () => {
           type="submit"
           className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
         >
-          Submit
+          {loading ? <Loader2 className="animate-spin" /> : "Submit"}
         </button>
       </div>
     </form>
   );
+};
+
+const CreateShipmentAppointment: React.FC = () => {
+  const [showPickupModal, setShowPickupModal] = useState(false);
+  const [showDropoffModal, setShowDropoffModal] = useState(false);
+  const [shipment, setShipment] = useState<Shipment | null>(null);
+  const { id } = useParams<{ id: string }>();
+
+  useEffect(() => {
+    if (!id) return;
+
+    const fetchShipment = async () => {
+      try {
+        const shipment = await shipperApi.getShipmentById({ id });
+        console.log({ shipment });
+        setShipment(shipment);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchShipment();
+  }, [id]);
+
+  if (!shipment) {
+    return (
+      <div className="flex h-screen justify-center items-center">
+        <Loader2 className="animate-spin" />;
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -252,11 +364,12 @@ const CreateShipmentAppointment: React.FC = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-900">
-                        {shipmentData.pickup.city}, {shipmentData.pickup.state}
+                        {shipment.pickup.city.name},{" "}
+                        {shipment.pickup.city.region_code}
                       </h3>
                       <div className="flex items-center space-x-2 text-sm text-gray-600">
                         <Calendar className="h-4 w-4" />
-                        <span>Date: {shipmentData.pickup.date}</span>
+                        <span>Date: {shipment.pickup.date}</span>
                       </div>
                     </div>
                   </div>
@@ -275,8 +388,8 @@ const CreateShipmentAppointment: React.FC = () => {
                 <div className="flex items-center justify-center space-x-2 text-sm text-gray-600">
                   <Clock className="h-4 w-4" />
                   <span>
-                    {shipmentData.miles}mi ({shipmentData.transitTime} hr
-                    transit time)
+                    {shipment.miles}mi ({shipment?.min_transit_time} hr transit
+                    time)
                   </span>
                 </div>
               </div>
@@ -290,12 +403,12 @@ const CreateShipmentAppointment: React.FC = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-900">
-                        {shipmentData.dropoff.city},{" "}
-                        {shipmentData.dropoff.state}
+                        {shipment.dropoff.city.name},{" "}
+                        {shipment.dropoff.city.region_code}
                       </h3>
                       <div className="flex items-center space-x-2 text-sm text-gray-600">
                         <Calendar className="h-4 w-4" />
-                        <span>Date: {shipmentData.dropoff.date}</span>
+                        <span>Date: {shipment.dropoff.date}</span>
                       </div>
                     </div>
                   </div>
@@ -317,8 +430,16 @@ const CreateShipmentAppointment: React.FC = () => {
                   <input
                     type="checkbox"
                     id="driver-assist"
-                    checked={driverAssist}
-                    onChange={(e) => setDriverAssist(e.target.checked)}
+                    checked={shipment.driver_assist}
+                    onChange={async (e) => {
+                      setShipment((prev) => ({
+                        ...prev!,
+                        driver_assist: e.target.checked,
+                      }));
+                      await shipperApi.updateShipmentAppointment(shipment.id, {
+                        driver_assist: e.target.checked,
+                      });
+                    }}
                     className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
                 </div>
@@ -348,16 +469,16 @@ const CreateShipmentAppointment: React.FC = () => {
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-bold text-gray-900">Total</h3>
                 <div className="text-2xl font-bold text-blue-600">
-                  ${shipmentData.basePrice + (driverAssist ? 150 : 0)}
+                  ${shipment?.base_price + (shipment.driver_assist ? 150 : 0)}
                 </div>
               </div>
 
               <div className="space-y-4 mb-6">
                 <div className="flex items-center justify-between">
                   <span className="text-gray-600">Base rate</span>
-                  <span className="font-medium">${shipmentData.basePrice}</span>
+                  <span className="font-medium">${shipment?.base_price}</span>
                 </div>
-                {driverAssist && (
+                {shipment.driver_assist && (
                   <div className="flex items-center justify-between">
                     <span className="text-gray-600">Driver assist</span>
                     <span className="font-medium">$150</span>
@@ -366,9 +487,12 @@ const CreateShipmentAppointment: React.FC = () => {
               </div>
 
               <div className="space-y-3">
-                <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors">
+                <Link
+                  to={`/shipments/${shipment.id}/finalizing`}
+                  className="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors"
+                >
                   Book shipment
-                </button>
+                </Link>
                 <p className="text-center text-sm text-gray-600">
                   Add final details in the next step
                 </p>
@@ -382,17 +506,39 @@ const CreateShipmentAppointment: React.FC = () => {
       <Modal
         isOpen={showPickupModal}
         onClose={() => setShowPickupModal(false)}
-        title={`Pick-up - ${shipmentData.pickup.date}`}
+        title={`Pick-up - ${shipment.pickup.date}`}
       >
-        <FacilityForm type="pickup" date={shipmentData.pickup.date} />
+        <FacilityForm
+          shipment={shipment}
+          type="pickup"
+          date={shipment.pickup.date}
+          updateShipmentState={(facility) =>
+            setShipment((prev) => ({
+              ...prev!,
+              pickup: { ...prev!.pickup, ...facility },
+            }))
+          }
+          onClose={() => setShowPickupModal(false)}
+        />
       </Modal>
 
       <Modal
         isOpen={showDropoffModal}
         onClose={() => setShowDropoffModal(false)}
-        title={`Drop-off - ${shipmentData.dropoff.date}`}
+        title={`Drop-off - ${shipment.dropoff.date}`}
       >
-        <FacilityForm type="dropoff" date={shipmentData.dropoff.date} />
+        <FacilityForm
+          shipment={shipment}
+          type="dropoff"
+          date={shipment.dropoff.date}
+          updateShipmentState={(facility) =>
+            setShipment((prev) => ({
+              ...prev!,
+              dropoff: { ...prev!.dropoff, ...facility },
+            }))
+          }
+          onClose={() => setShowDropoffModal(false)}
+        />
       </Modal>
     </div>
   );
