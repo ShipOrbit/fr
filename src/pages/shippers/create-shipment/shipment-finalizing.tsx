@@ -1,6 +1,6 @@
+import { MapPin, Package, Truck } from "lucide-react";
 import React, { useState } from "react";
-import { Package, Truck, MapPin } from "lucide-react";
-import Header from "../components/header";
+import Layout from "../components/layout";
 
 // Mock data for shipment details (would come from props/state in real app)
 const mockShipment = {
@@ -35,8 +35,7 @@ const ShipmentFinalizing: React.FC = () => {
     mockShipment.basePrice + (mockShipment.driverAssist ? 150 : 0);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
+    <Layout>
       <div className="min-h-screen bg-gray-50 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -329,7 +328,7 @@ const ShipmentFinalizing: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 
