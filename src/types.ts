@@ -150,6 +150,11 @@ export interface updateFinalizingData {
   dropoff_number?: string;
   dropoff_notes?: string;
 }
+export interface UpdateAppointmentData {
+  pickup?: Facility;
+  dropoff?: Facility;
+  driver_assist?: boolean;
+}
 
 export interface GetShipmentsResult {
   results: Shipment[];
