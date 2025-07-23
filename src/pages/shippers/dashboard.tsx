@@ -187,7 +187,7 @@ const Dashboard: React.FC = () => {
           {/* Shipments List */}
           {loading ? (
             <div className="lg:col-span-3 h-full flex items-center justify-center">
-              <Loader2 className="animate-spin" />{" "}
+              <Loader2 className="animate-spin" />
             </div>
           ) : (
             <div className="lg:col-span-3">
