@@ -1,6 +1,6 @@
 import { MapPin, Package, Truck } from "lucide-react";
 import React, { useState } from "react";
-import Layout from "../components/layout";
+import Layout from "../../components/layout";
 
 // Mock data for shipment details (would come from props/state in real app)
 const mockShipment = {
