@@ -19,32 +19,9 @@ const Footer = () => (
             *ShipOrbit is a licensed logistics technology provider.
           </p>
         </div>
-
-        <div>
-          <h3 className="text-lg font-semibold mb-4">Products</h3>
-          <ul className="space-y-2">
-            <li>
-              <Link
-                to="/shippers"
-                className="text-gray-400 hover:text-white transition-colors"
-              >
-                Shippers
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/carriers"
-                className="text-gray-400 hover:text-white transition-colors"
-              >
-                Carriers
-              </Link>
-            </li>
-          </ul>
-        </div>
-
         <div>
           <h3 className="text-lg font-semibold mb-4">Company</h3>
-          <ul className="space-y-2">
+          <ul className="grid grid-cols-2 gap-x-6 gap-y-2">
             <li>
               <Link
                 to="/about"
