@@ -6,7 +6,6 @@ import Header from "./header";
 
 interface LayoutProps {
   children: React.ReactNode;
-  showNav?: boolean;
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
