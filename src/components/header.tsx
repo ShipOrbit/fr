@@ -25,18 +25,6 @@ const Header = () => {
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-8">
               <Link
-                to="/carriers"
-                className="text-white hover:text-blue-200 transition-colors"
-              >
-                Carriers
-              </Link>
-              <Link
-                to="/shippers"
-                className="text-white hover:text-blue-200 transition-colors"
-              >
-                Shippers
-              </Link>
-              <Link
                 to="/blog"
                 className="text-white hover:text-blue-200 transition-colors"
               >
@@ -47,6 +35,12 @@ const Header = () => {
                 className="text-white hover:text-blue-200 transition-colors"
               >
                 Support
+              </Link>
+              <Link
+                to="/about"
+                className="text-white hover:text-blue-200 transition-colors"
+              >
+                About
               </Link>
               <Link
                 to="/covid"
@@ -60,12 +54,6 @@ const Header = () => {
           {auth.isAuthenticated && auth.user?.is_email_verified ? (
             <div className="hidden md:flex items-center space-x-4">
               <Link
-                to="/about"
-                className="text-white hover:text-blue-200 transition-colors"
-              >
-                About
-              </Link>
-              <Link
                 to="/dashboard"
                 className="text-white hover:text-blue-200 transition-colors"
               >
@@ -75,12 +63,6 @@ const Header = () => {
           ) : (
             <div className="hidden md:flex items-center space-x-4">
               <Link
-                to="/about"
-                className="text-white hover:text-blue-200 transition-colors"
-              >
-                About
-              </Link>
-              <Link
                 to="/login"
                 className="text-white hover:text-blue-200 transition-colors"
               >
@@ -88,7 +70,7 @@ const Header = () => {
               </Link>
               <Link
                 to="/sign-up"
-                className="bg-white text-blue-600 px-4 py-2 rounded-full hover:bg-blue-50 transition-colors font-medium cursor-pointer"
+                className="bg-white text-blue-600 px-4 py-2 rounded-md hover:bg-blue-50 transition-colors font-medium cursor-pointer"
               >
                 Sign up
               </Link>
@@ -113,18 +95,6 @@ const Header = () => {
       {isMenuOpen && (
         <div className="md:hidden bg-blue-800">
           <div className="px-2 pt-2 pb-3 space-y-1">
-            <Link
-              to="/carriers"
-              className="block px-3 py-2 text-white hover:bg-blue-700 rounded-md"
-            >
-              Carriers
-            </Link>
-            <Link
-              to="/shippers"
-              className="block px-3 py-2 text-white hover:bg-blue-700 rounded-md"
-            >
-              Shippers
-            </Link>
             <Link
               to="/blog"
               className="block px-3 py-2 text-white hover:bg-blue-700 rounded-md"
