@@ -7,6 +7,7 @@ import { cn } from "../../../utils/cn";
 const Header: React.FC = () => {
   const { user } = useAuth();
   const location = useLocation();
+  const [dropdown, setDropdown] = useState(false);
 
   return (
     <nav className="bg-white shadow-lg border-b">
@@ -62,56 +63,64 @@ const Header: React.FC = () => {
 
               {/* User Dropdown */}
               <div className="relative">
-                <button className="flex items-center text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">
+                <button
+                  onClick={() => setDropdown((prev) => !prev)}
+                  className="flex items-center text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium"
+                >
                   {user?.first_name}
                   <ChevronDown className="ml-1 h-4 w-4" />
                 </button>
                 {/* Dropdown menu would be implemented with state management */}
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 hidden">
-                  <Link
-                    to="/insight"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    Insight
-                  </Link>
-                  <Link
-                    to="/download"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    Download Shipments
-                  </Link>
-                  <Link
-                    to="/faq"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    View FAQs
-                  </Link>
-                  <Link
-                    to="/terms"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    View Terms
-                  </Link>
-                  <Link
-                    to="/settings"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    Settings
-                  </Link>
-                  <Link
-                    to="/contact"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    Contact us
-                  </Link>
-                  <hr className="my-1" />
-                  <Link
-                    to="/logout"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    Sign Out
-                  </Link>
-                </div>
+                {dropdown && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg py-1 z-50">
+                    <Link
+                      to="/insight"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Insight
+                    </Link>
+                    <Link
+                      to="/download"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Download Shipments
+                    </Link>
+                    <Link
+                      to="/faq"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      View FAQs
+                    </Link>
+                    <Link
+                      to="/terms"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      View Terms
+                    </Link>
+                    <Link
+                      to="/settings"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Settings
+                    </Link>
+                    <Link
+                      to="/contact"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Contact us
+                    </Link>
+                    <hr className="my-1" />
+                    <button
+                      onClick={() => {
+                        logout();
+                        navigate("/login");
+                      }}
+                      className="w-full cursor-pointer text-start px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
