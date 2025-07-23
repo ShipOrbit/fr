@@ -15,6 +15,8 @@ import SignUpStep2 from "./pages/shippers/sign-up/shipping-needs";
 import SupportLanding from "./pages/support";
 import VerifyEmail from "./pages/verify-email";
 import { AuthProvider } from "./providers/auth";
+import ResetPassword from "./pages/reset-password";
+import ConfirmResetPassword from "./pages/reset-password/confirm";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +26,14 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <SignIn />,
+  },
+  {
+    path: "/reset-password",
+    element: <ResetPassword />,
+  },
+  {
+    path: "/reset-password/:token",
+    element: <ConfirmResetPassword />,
   },
   {
     path: "/sign-up",
