@@ -17,6 +17,8 @@ import VerifyEmail from "./pages/verify-email";
 import { AuthProvider } from "./providers/auth";
 import ResetPassword from "./pages/reset-password";
 import ConfirmResetPassword from "./pages/reset-password/confirm";
+import BillingPage from "./pages/shippers/billing";
+import NotYetPage from "./pages/not-yet";
 
 const router = createBrowserRouter([
   {
@@ -72,6 +74,10 @@ const router = createBrowserRouter([
     element: <ShipmentFinalizing />,
   },
   {
+    path: "/billing",
+    element: <BillingPage />,
+  },
+  {
     path: "/shippers",
     element: <ShippersLanding />,
   },
@@ -86,6 +92,10 @@ const router = createBrowserRouter([
   {
     path: "/about",
     element: <AboutPage />,
+  },
+  {
+    path: "/*",
+    element: <NotYetPage />,
   },
 ]);
 function App() {
