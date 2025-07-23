@@ -12,6 +12,7 @@ const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const [shipments, setShipments] = useState<Shipment[]>([]);
   const [filteredShipments, setFilteredShipments] = useState<Shipment[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [activeFilter, setActiveFilter] = useState<Shipment["status"] | "all">(
     "all"
   );
@@ -33,32 +34,45 @@ const Dashboard: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    const filterShipmentsByCity = (shipment: Shipment) =>
+      shipment.pickup.city.name.includes(
+        searchTerm.charAt(0).toUpperCase() + searchTerm.slice(1).toLowerCase()
+      ) || shipment.pickup.city.region_code.includes(searchTerm.toUpperCase());
+
+    const filterShipmentsByStateAndCity =
+      (status: Shipment["status"]) => (shipment: Shipment) =>
+        shipment.status === status &&
+        (shipment.pickup.city.name.includes(
+          searchTerm.charAt(0).toUpperCase() + searchTerm.slice(1).toLowerCase()
+        ) ||
+          shipment.pickup.city.region_code.includes(searchTerm.toUpperCase()));
+
     switch (activeFilter) {
       case "all":
-        setFilteredShipments(shipments);
+        setFilteredShipments(shipments.filter(filterShipmentsByCity));
         break;
       case "unfinished":
         setFilteredShipments(
-          shipments.filter((shipment) => shipment.status === "unfinished")
+          shipments.filter(filterShipmentsByStateAndCity("unfinished"))
         );
         break;
       case "upcoming":
         setFilteredShipments(
-          shipments.filter((shipment) => shipment.status === "upcoming")
+          shipments.filter(filterShipmentsByStateAndCity("upcoming"))
         );
         break;
       case "inprogress":
         setFilteredShipments(
-          shipments.filter((shipment) => shipment.status === "inprogress")
+          shipments.filter(filterShipmentsByStateAndCity("inprogress"))
         );
         break;
       case "past":
         setFilteredShipments(
-          shipments.filter((shipment) => shipment.status === "past")
+          shipments.filter(filterShipmentsByStateAndCity("past"))
         );
         break;
     }
-  }, [activeFilter, shipments]);
+  }, [activeFilter, shipments, searchTerm]);
 
   const counts = {
     all: shipments.length,
@@ -95,6 +109,8 @@ const Dashboard: React.FC = () => {
                   type="text"
                   placeholder="Filter shipments"
                   className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
             </div>
