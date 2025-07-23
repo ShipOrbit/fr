@@ -139,6 +139,18 @@ export type Facility = Pick<
   | "contact_name"
 >;
 
+export interface updateFinalizingData {
+  reference_number?: string;
+  weight?: number;
+  commodity?: string;
+  packaging?: number;
+  packaging_type?: string;
+  pickup_number?: string;
+  pickup_notes?: string;
+  dropoff_number?: string;
+  dropoff_notes?: string;
+}
+
 export interface GetShipmentsResult {
   results: Shipment[];
   count: number;
