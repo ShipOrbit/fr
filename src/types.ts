@@ -114,18 +114,39 @@ export interface CreateShipmentData {
 
 export interface Shipment {
   id: string;
+  equipment: "dryVan" | "reefer";
   status: "unfinished" | "inprogress" | "upcoming" | "past";
   finalizeDate: string;
-  pickup: {
-    city: GeoDBCity;
-    state: string;
-    date: string;
-  };
-  dropoff: {
-    city: GeoDBCity;
-    state: string;
-    date: string;
-  };
+  base_price: string;
+  commodity: string;
+  driver_assist: boolean;
+  driver_assist_fee: string;
+  miles: number | null;
+  min_transit_time: number | null;
+  packaging: number | null;
+  packaging_type: string;
+  reference_number: string;
+  total_price: number;
+  weight: number | null;
+  pickup: Location;
+  dropoff: Location;
+  update_at: string;
+  created_at: string;
+}
+
+export interface Location {
+  city: GeoDBCity;
+  date: string;
+  additional_notes: string;
+  contact_name: string;
+  email: string;
+  facility_address: string;
+  facility_name: string;
+  location_number: string;
+  location_type: "pickup" | "dropoff";
+  phone_number: string;
+  scheduling_preference: "first_come" | "already_scheduled" | "to_be_scheduled";
+  zip_code: string;
 }
 
 export type Facility = Pick<
