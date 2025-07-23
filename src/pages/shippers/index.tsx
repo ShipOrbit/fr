@@ -12,6 +12,7 @@ import {
   Zap,
 } from "lucide-react";
 import Layout from "../../components/layout";
+import { Link } from "react-router";
 
 const ShippersLanding = () => {
   const HeroSection = () => (
@@ -29,10 +30,13 @@ const ShippersLanding = () => {
               management all in one platform.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <button className="bg-blue-600 text-white px-8 py-4 rounded-full hover:bg-blue-700 transition-all transform hover:scale-105 flex items-center justify-center group cursor-pointer">
+              <Link
+                to="/sign-up"
+                className="bg-blue-600 text-white px-8 py-4 rounded-full hover:bg-blue-700 transition-all transform hover:scale-105 flex items-center justify-center group cursor-pointer"
+              >
                 Start Shipping Now
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:tranblue-x-1 transition-transform" />
-              </button>
+              </Link>
             </div>
           </div>
           <div className="relative">
@@ -269,10 +273,13 @@ const ShippersLanding = () => {
             logistics needs. Start your free trial today.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-blue-600 px-8 py-4 rounded-full hover:bg-gray-100 transition-all transform hover:scale-105 flex items-center justify-center group cursor-pointer">
+            <Link
+              to="/sign-up"
+              className="bg-white text-blue-600 px-8 py-4 rounded-full hover:bg-gray-100 transition-all transform hover:scale-105 flex items-center justify-center group cursor-pointer"
+            >
               Start Now
               <ArrowRight className="ml-2 h-5 w-5 group-hover:tranblue-x-1 transition-transform" />
-            </button>
+            </Link>
           </div>
         </div>
       </div>
