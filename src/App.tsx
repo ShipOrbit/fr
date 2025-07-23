@@ -2,7 +2,6 @@ import { createBrowserRouter, RouterProvider } from "react-router";
 import SignIn from "./components/signin";
 import HomePage from "./pages";
 import AboutPage from "./pages/about";
-import ShippersLanding from "./pages/shippers";
 import ShipmentFinalizing from "./pages/shippers/create-shipment/shipment-finalizing";
 import CreateShipmentAppointment from "./pages/shippers/create-shipment/create-shipment-appointment";
 import SelectDatePage from "./pages/shippers/create-shipment/select-shipment-dates";
@@ -75,10 +74,6 @@ const router = createBrowserRouter([
   {
     path: "/billing",
     element: <BillingPage />,
-  },
-  {
-    path: "/shippers",
-    element: <ShippersLanding />,
   },
   {
     path: "/support",
