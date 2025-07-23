@@ -128,6 +128,17 @@ export interface Shipment {
   };
 }
 
+export type Facility = Pick<
+  Location,
+  | "facility_name"
+  | "facility_address"
+  | "scheduling_preference"
+  | "zip_code"
+  | "email"
+  | "phone_number"
+  | "contact_name"
+>;
+
 export interface GetShipmentsResult {
   results: Shipment[];
   count: number;
