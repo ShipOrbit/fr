@@ -1,4 +1,5 @@
 import { Package } from "lucide-react";
+import { Link } from "react-router";
 
 const Footer = () => (
   <footer className="bg-gray-900 text-white py-12">
@@ -23,20 +24,20 @@ const Footer = () => (
           <h3 className="text-lg font-semibold mb-4">Products</h3>
           <ul className="space-y-2">
             <li>
-              <a
-                href="#shippers"
+              <Link
+                to="/shippers"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 Shippers
-              </a>
+              </Link>
             </li>
             <li>
-              <a
-                href="#carriers"
+              <Link
+                to="/carriers"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 Carriers
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
@@ -45,36 +46,36 @@ const Footer = () => (
           <h3 className="text-lg font-semibold mb-4">Company</h3>
           <ul className="space-y-2">
             <li>
-              <a
-                href="#about"
+              <Link
+                to="/about"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 About
-              </a>
+              </Link>
             </li>
             <li>
-              <a
-                href="#careers"
+              <Link
+                to="/careers"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 Careers
-              </a>
+              </Link>
             </li>
             <li>
-              <a
-                href="#blog"
+              <Link
+                to="/blog"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 Blog
-              </a>
+              </Link>
             </li>
             <li>
-              <a
-                href="#support"
+              <Link
+                to="/support"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 Support
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
