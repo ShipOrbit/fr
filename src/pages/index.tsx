@@ -1,13 +1,6 @@
-import {
-  ArrowRight,
-  ChevronRight,
-  Clock,
-  Package,
-  Shield,
-  Star,
-} from "lucide-react";
-import Layout from "../components/layout";
+import { ArrowRight, Clock, Package, Shield, Star } from "lucide-react";
 import { Link } from "react-router";
+import Layout from "../components/layout";
 
 const ShipOrbitLanding = () => {
   const HeroSection = () => (
@@ -25,22 +18,16 @@ const ShipOrbitLanding = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
-                to="/shippers"
-                className="bg-blue-600 text-white px-8 py-4 rounded-full hover:bg-blue-700 transition-all transform hover:scale-105 flex items-center justify-center group cursor-pointer"
+                to="/sign-up"
+                className="bg-blue-600 text-white px-8 py-4 rounded-md hover:bg-blue-700 transition-all transform hover:scale-105 flex items-center justify-center group cursor-pointer"
               >
                 Ship with OrbitLogistics
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:tra-blue-x-1 transition-transform" />
               </Link>
-              <Link
-                to="/carriers"
-                className="border-2 border-blue-600 text-blue-600 px-8 py-4 rounded-full hover:bg-blue-600 hover:text-white transition-all cursor-pointer"
-              >
-                Drive with OrbitLogistics
-              </Link>
             </div>
           </div>
           <div className="relative">
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+            <div className="relative rounded-2xl overflow-hidden">
               <img
                 src="https://plus.unsplash.com/premium_photo-1683120796013-f2f18451a907?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 alt="Modern logistics and shipping"
@@ -48,7 +35,7 @@ const ShipOrbitLanding = () => {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-blue-900/20 to-transparent"></div>
             </div>
-            <div className="absolute -top-4 -right-4 bg-white rounded-full p-4 shadow-lg">
+            <div className="absolute -top-4 -right-4 bg-white rounded-md p-4">
               <Package className="h-8 w-8 text-blue-600" />
             </div>
           </div>
@@ -73,7 +60,7 @@ const ShipOrbitLanding = () => {
               </p>
               <Link
                 to="/safety"
-                className="bg-white text-gray-900 px-8 py-3 rounded-full hover:bg-gray-100 transition-colors font-medium cursor-pointer"
+                className="bg-white text-gray-900 px-8 py-3 rounded-md hover:bg-gray-100 transition-colors font-medium cursor-pointer"
               >
                 Learn More
               </Link>
@@ -82,7 +69,7 @@ const ShipOrbitLanding = () => {
               <img
                 src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                 alt="Safety and security in logistics"
-                className="rounded-2xl shadow-2xl"
+                className="rounded-2xl"
               />
             </div>
           </div>
@@ -100,7 +87,7 @@ const ShipOrbitLanding = () => {
           </h2>
         </div>
 
-        <div className="mb-16 rounded-3xl overflow-hidden shadow-2xl">
+        <div className="mb-16 rounded-3xl overflow-hidden">
           <img
             src="https://images.unsplash.com/photo-1494412651409-8963ce7935a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
             alt="Global logistics network"
@@ -110,7 +97,7 @@ const ShipOrbitLanding = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
           <div className="text-center p-8 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl">
-            <div className="bg-blue-600 rounded-full p-4 w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+            <div className="bg-blue-600 rounded-md p-4 w-20 h-20 mx-auto mb-6 flex items-center justify-center">
               <Clock className="h-10 w-10 text-white" />
             </div>
             <h3 className="text-xl font-bold text-gray-900 mb-2">
@@ -122,7 +109,7 @@ const ShipOrbitLanding = () => {
           </div>
 
           <div className="text-center p-8 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl">
-            <div className="bg-green-600 rounded-full p-4 w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+            <div className="bg-green-600 rounded-md p-4 w-20 h-20 mx-auto mb-6 flex items-center justify-center">
               <Shield className="h-10 w-10 text-white" />
             </div>
             <h3 className="text-xl font-bold text-gray-900 mb-2">
@@ -134,7 +121,7 @@ const ShipOrbitLanding = () => {
           </div>
 
           <div className="text-center p-8 bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl">
-            <div className="bg-purple-600 rounded-full p-4 w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+            <div className="bg-purple-600 rounded-md p-4 w-20 h-20 mx-auto mb-6 flex items-center justify-center">
               <Star className="h-10 w-10 text-white" />
             </div>
             <h3 className="text-xl font-bold text-gray-900 mb-2">
@@ -145,53 +132,6 @@ const ShipOrbitLanding = () => {
             </p>
           </div>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          <Link to="/carriers" className="group cursor-pointer">
-            <div className="relative rounded-2xl overflow-hidden shadow-lg group-hover:shadow-2xl transition-shadow">
-              <img
-                src="https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                alt="Carriers"
-                className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-blue-900/60 to-transparent"></div>
-            </div>
-            <h3 className="text-2xl font-bold text-gray-900 mt-6 mb-3">
-              Carriers
-            </h3>
-            <p className="text-gray-600 mb-4">
-              Smart load matching. Maximum efficiency.
-            </p>
-            <span className="text-blue-600 hover:text-blue-700 font-medium flex items-center group">
-              Learn more
-              <ChevronRight className="ml-1 h-4 w-4 group-hover:tra-blue-x-1 transition-transform" />
-            </span>
-          </Link>
-
-          <Link to="/shippers" className="group cursor-pointer">
-            <div className="relative rounded-2xl overflow-hidden shadow-lg group-hover:shadow-2xl transition-shadow">
-              <img
-                src="https://images.unsplash.com/photo-1586953208448-b95a79798f07?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                alt="Shippers"
-                className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-green-900/60 to-transparent"></div>
-            </div>
-            <h3 className="text-2xl font-bold text-gray-900 mt-6 mb-3">
-              Shippers
-            </h3>
-            <p className="text-gray-600 mb-4">
-              Seamless booking. Instant capacity access.
-            </p>
-            <a
-              href="#shippers"
-              className="text-blue-600 hover:text-blue-700 font-medium flex items-center group"
-            >
-              Learn more
-              <ChevronRight className="ml-1 h-4 w-4 group-hover:tra-blue-x-1 transition-transform" />
-            </a>
-          </Link>
-        </div>
       </div>
     </section>
   );
@@ -199,7 +139,7 @@ const ShipOrbitLanding = () => {
   const AwardsSection = () => (
     <section className="py-16 bg-gradient-to-br from-gray-50 to-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-3xl p-8 lg:p-12 shadow-xl">
+        <div className="bg-white rounded-3xl p-8 lg:p-12">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
               Industry Recognition
@@ -275,7 +215,7 @@ const ShipOrbitLanding = () => {
           </p>
           <Link
             to="/sign-up"
-            className="bg-white text-blue-600 px-8 py-3 rounded-full hover:bg-gray-100 transition-colors font-medium flex items-center group cursor-pointer"
+            className="bg-white text-blue-600 px-8 py-3 rounded-md hover:bg-gray-100 transition-colors font-medium flex items-center group cursor-pointer"
           >
             Get Started Today
             <ArrowRight className="ml-2 h-5 w-5 group-hover:tra-blue-x-1 transition-transform" />
@@ -299,7 +239,7 @@ const ShipOrbitLanding = () => {
             </p>
             <Link
               to="/sign-up"
-              className="bg-blue-600 text-white px-8 py-4 rounded-full hover:bg-blue-700 transition-all transform hover:scale-105 flex items-center group cursor-pointer"
+              className="bg-blue-600 text-white px-8 py-4 rounded-md hover:bg-blue-700 transition-all transform hover:scale-105 flex items-center group cursor-pointer"
             >
               Start Shipping Now
               <ArrowRight className="ml-2 h-5 w-5 group-hover:tra-blue-x-1 transition-transform" />
@@ -309,7 +249,7 @@ const ShipOrbitLanding = () => {
             <img
               src="https://images.unsplash.com/photo-1556761175-b413da4baf72?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
               alt="Sign up and get started"
-              className="rounded-2xl shadow-2xl"
+              className="rounded-2xl"
             />
           </div>
         </div>
