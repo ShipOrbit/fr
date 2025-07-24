@@ -37,7 +37,7 @@ export function useFetch<T>(fn: () => Promise<T>): UseFetchResult<T> {
     } finally {
       setLoading(false);
     }
-  }, [fn]);
+  }, []);
 
   useEffect(() => {
     fetchData();
