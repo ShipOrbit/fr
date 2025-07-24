@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, MapPin, Package } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { shipperApi } from "../../../../services/api/shipper";
 import type { Shipment } from "../../../../types";
 import normalizeDefaultValue from "../../../../utils/normalize-default-value";
@@ -19,7 +19,6 @@ const ShipmentFinalizing: React.FC = () => {
     const fetchShipment = async () => {
       try {
         const shipment = await shipperApi.getShipmentById({ id });
-        console.log({ shipment });
         setShipment(shipment);
       } catch (error) {
         console.log(error);
@@ -50,12 +49,17 @@ const ShipmentFinalizing: React.FC = () => {
 export default ShipmentFinalizing;
 
 function ShipmentFinalizeForm({ shipment }: { shipment: Shipment }) {
-  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState<"saving" | "finalizing" | "idle">(
+    "idle"
+  );
+  const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    trigger,
+    getValues,
   } = useForm<ShipmentFormValues>({
     resolver: zodResolver(shipmentSchema),
     defaultValues: {
@@ -69,27 +73,39 @@ function ShipmentFinalizeForm({ shipment }: { shipment: Shipment }) {
       dropoff_number: shipment.dropoff.location_number,
       dropoff_notes: shipment.dropoff.additional_notes,
     },
-    disabled: loading,
+    disabled: status != "idle",
   });
 
-  const onSubmit: React.FormEventHandler<HTMLFormElement> = handleSubmit(
-    async (data) => {
+  const handleSaveShipment: React.FormEventHandler<HTMLFormElement> =
+    handleSubmit(async (data) => {
       try {
-        setLoading(true);
-        const result = await shipperApi.updateShipmentFinalizing(
-          shipment.id,
-          data
-        );
-        console.log({ result });
+        setStatus("saving");
+        await shipperApi.updateShipmentFinalizing(shipment.id, data);
       } catch (error) {
         console.log({ error });
       } finally {
-        setLoading(false);
+        setStatus("idle");
       }
+    });
+
+  const handleFinalizeShipment = async () => {
+    try {
+      setStatus("finalizing");
+      const formIsValid = await trigger();
+      if (formIsValid) {
+        const data = getValues();
+        await shipperApi.updateShipmentFinalizing(shipment.id, data);
+        navigate(`/shipments/${shipment.id}/checkout`);
+      }
+    } catch (error) {
+      console.log({ error });
+    } finally {
+      setStatus("idle");
     }
-  );
+  };
+
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={handleSaveShipment}>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Form Section */}
         <div className="lg:col-span-2">
@@ -360,14 +376,19 @@ function ShipmentFinalizeForm({ shipment }: { shipment: Shipment }) {
               <button
                 type="button"
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                onClick={handleFinalizeShipment}
               >
-                Finalize shipment
+                {status === "saving" ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  "Finalize shipment"
+                )}
               </button>
               <button
                 type="submit"
                 className="w-full flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-4 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
               >
-                {loading ? (
+                {status === "saving" ? (
                   <Loader2 className="animate-spin" />
                 ) : (
                   "Save and finish later"
