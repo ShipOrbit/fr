@@ -17,6 +17,7 @@ import ResetPassword from "./pages/reset-password";
 import ConfirmResetPassword from "./pages/reset-password/confirm";
 import BillingPage from "./pages/shippers/billing";
 import NotYetPage from "./pages/not-yet";
+import CheckoutPage from "./pages/checkout";
 
 const router = createBrowserRouter([
   {
@@ -74,6 +75,10 @@ const router = createBrowserRouter([
   {
     path: "/billing",
     element: <BillingPage />,
+  },
+  {
+    path: "/shipments/:id/checkout",
+    element: <CheckoutPage />,
   },
   {
     path: "/support",
