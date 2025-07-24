@@ -190,3 +190,17 @@ export interface Invoice {
   paid_at: string;
   shipments: number;
 }
+
+export interface CreatePaymentIntentData {
+  shipment_id: string;
+  payment_method_id: string;
+}
+
+export interface PaymentIntent {
+  payment: { stripe_payment_intent_id: string };
+  client_secret: string;
+  status: string;
+  requires_action: string;
+  next_action: string;
+  message: string;
+}
