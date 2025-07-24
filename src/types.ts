@@ -207,3 +207,6 @@ export interface PaymentIntent {
 export interface ConfirmPaymentData {
   payment_intent_id: string;
 }
+export interface ConfirmPaymentResult {
+  payment: { status: string };
+}
