@@ -1,5 +1,6 @@
 import { Loader2 } from "lucide-react";
 import React from "react";
+import { Toaster } from "react-hot-toast";
 import { Navigate } from "react-router";
 import { useAuth } from "../../hooks/use-auth";
 import Header from "./header";
@@ -33,6 +34,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Toaster />
       <Header />
       {children}
     </div>
