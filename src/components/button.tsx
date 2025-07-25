@@ -18,7 +18,7 @@ export default function Button({
   return (
     <button
       className={cn(
-        "flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors ml-auto",
+        "flex items-center justify-center text-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors",
         className
       )}
       disabled={disabled || loading}
