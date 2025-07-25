@@ -1,116 +1,11 @@
-import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
-import {
-  AlertCircle,
-  Calendar,
-  CheckCircle,
-  Loader2,
-  MapPin,
-  Shield,
-} from "lucide-react";
+import { Calendar, CheckCircle, Loader2, MapPin } from "lucide-react";
 import { useState } from "react";
 import { Link, Navigate, useParams } from "react-router";
 import { useFetch } from "../../hooks/use-fetch";
 import StripeProvider from "../../providers/stripe-provider";
-import { paymentApi } from "../../services/api/payment";
 import { shipperApi } from "../../services/api/shipper";
-import type { Shipment } from "../../types";
 import Layout from "../components/layout";
-
-type CheckoutFormProps = {
-  shipment: Shipment;
-  onPaymentSuccess: () => void;
-};
-
-const CheckoutForm = ({ shipment, onPaymentSuccess }: CheckoutFormProps) => {
-  const [error, setError] = useState<string>();
-  const stripe = useStripe();
-  const elements = useElements();
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!stripe || !elements) return;
-
-    const cardNumber = elements.getElement(CardElement);
-
-    if (!cardNumber) {
-      setError("Card number input not found.");
-      return;
-    }
-
-    const { error, paymentMethod } = await stripe.createPaymentMethod({
-      type: "card",
-      card: cardNumber,
-    });
-
-    if (error) {
-      console.error(error.message);
-      setError(error.message);
-    } else {
-      setError(undefined);
-      try {
-        const result = await paymentApi.createPaymentIntent({
-          payment_method_id: paymentMethod.id,
-          shipment_id: shipment.id,
-        });
-
-        if (result.requires_action) {
-          const { error } = await stripe.handleCardAction(result.client_secret);
-
-          if (!error) {
-            const confirmResult = await paymentApi.confirmPayment({
-              payment_intent_id: result.payment.stripe_payment_intent_id,
-            });
-
-            if (confirmResult.payment.status === "succeeded") {
-              onPaymentSuccess();
-            }
-          }
-        } else if (result.status === "succeeded") {
-          onPaymentSuccess();
-        }
-      } catch (error) {
-        console.log({ error });
-      }
-    }
-  };
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <div className="space-y-6">
-        <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            Payment Method
-          </h3>
-        </div>
-
-        <CardElement />
-
-        <div className="flex items-center p-4 bg-blue-50 rounded-lg">
-          <Shield className="h-5 w-5 text-blue-600 mr-3" />
-          <div className="text-sm text-blue-800">
-            <p className="font-medium">Your payment is secure</p>
-            <p>Protected by 256-bit SSL encryption</p>
-          </div>
-        </div>
-
-        {error && (
-          <div className="flex items-center p-4 bg-red-50 rounded-lg">
-            <AlertCircle className="h-5 w-5 text-red-600 mr-3" />
-            <p className="text-sm text-red-800">{error}</p>
-          </div>
-        )}
-
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-        >
-          {`Pay $${shipment.total_price}`}
-        </button>
-      </div>
-    </form>
-  );
-};
+import CheckoutForm from "../../components/checkout-form";
 
 const CheckoutPage = () => {
   const [currentView, setCurrentView] = useState("checkout");
@@ -285,18 +180,6 @@ const CheckoutPage = () => {
                   onPaymentSuccess={handlePaymentSuccess}
                 />
               </StripeProvider>
-            </div>
-
-            {/* Terms and Conditions */}
-            <div className="text-xs text-gray-500 text-center">
-              By completing this payment, you agree to our{" "}
-              <a href="#" className="text-blue-600 hover:underline">
-                Terms of Service
-              </a>{" "}
-              and{" "}
-              <a href="#" className="text-blue-600 hover:underline">
-                Privacy Policy
-              </a>
             </div>
           </div>
         </div>
