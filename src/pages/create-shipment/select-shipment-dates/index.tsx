@@ -384,7 +384,7 @@ const SelectDatePage: React.FC = () => {
                       {isLoading
                         ? "Loading..."
                         : distancePrice
-                        ? `$${distancePrice.total_price_with_assist}`
+                        ? `$${distancePrice.base_price}`
                         : "$--"}
                     </p>
                   </div>
