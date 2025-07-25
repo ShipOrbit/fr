@@ -296,18 +296,6 @@ const SignUpStep1: React.FC = () => {
                     )}
                   </div>
 
-                  <div className="space-y-3">
-                    <p className="text-xs text-gray-500">
-                      By clicking Sign up, you confirm that you have read and
-                      agreed to{" "}
-                      <a href="#" className="text-blue-600 hover:text-blue-500">
-                        ShipOrbit's General Terms and Conditions and Privacy
-                        Policy
-                      </a>
-                      .
-                    </p>
-                  </div>
-
                   <button
                     type="submit"
                     disabled={isSubmitting}
