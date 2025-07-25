@@ -1,3 +1,4 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   ArrowRight,
   Calendar,
@@ -6,27 +7,16 @@ import {
   Truck,
 } from "lucide-react";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
 import { LocationSearchInput } from "../../../components/location-search-input";
 import { shipperApi } from "../../../services/api/shipper";
 import type { GeoDBCity, PriceCalculation } from "../../../types";
-import Layout from "../../components/layout";
 import { cn } from "../../../utils/cn";
-import z from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "react-router";
+import Layout from "../../components/layout";
+import { type ShipmentFormValues, shipmentSchema } from "./schema";
 
 const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-const shipmentSchema = z.object({
-  equipment: z.string().nonempty(),
-  pickup_location: z.number("You must select an option"),
-  dropoff_location: z.number("You must select an option"),
-  pickup_date: z.string().min(10, "Pick-up date is required"),
-  dropoff_date: z.string().min(10),
-});
-
-export type ShipmentFormValues = z.infer<typeof shipmentSchema>;
 
 const SelectDatePage: React.FC = () => {
   const navigate = useNavigate();
