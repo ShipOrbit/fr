@@ -1,10 +1,8 @@
-import { Menu, Package, X } from "lucide-react";
-import { useState } from "react";
+import { Package } from "lucide-react";
 import { Link } from "react-router";
 import { useAuth } from "../hooks/use-auth";
 
 const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const auth = useAuth();
 
   return (
@@ -22,37 +20,8 @@ const Header = () => {
             </div>
           </Link>
 
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-8">
-              <Link
-                to="/blog"
-                className="text-white hover:text-blue-200 transition-colors"
-              >
-                Blog
-              </Link>
-              <Link
-                to="/support"
-                className="text-white hover:text-blue-200 transition-colors"
-              >
-                Support
-              </Link>
-              <Link
-                to="/about"
-                className="text-white hover:text-blue-200 transition-colors"
-              >
-                About
-              </Link>
-              <Link
-                to="/covid"
-                className="text-white hover:text-blue-200 transition-colors"
-              >
-                Safety First
-              </Link>
-            </div>
-          </div>
-
           {auth.isAuthenticated && auth.user?.is_email_verified ? (
-            <div className="hidden md:flex items-center space-x-4">
+            <div className="flex items-center space-x-4">
               <Link
                 to="/dashboard"
                 className="text-white hover:text-blue-200 transition-colors"
@@ -61,7 +30,7 @@ const Header = () => {
               </Link>
             </div>
           ) : (
-            <div className="hidden md:flex items-center space-x-4">
+            <div className="flex items-center space-x-4">
               <Link
                 to="/login"
                 className="text-white hover:text-blue-200 transition-colors"
@@ -76,52 +45,8 @@ const Header = () => {
               </Link>
             </div>
           )}
-
-          <div className="md:hidden">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-white hover:text-blue-200"
-            >
-              {isMenuOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
-            </button>
-          </div>
         </div>
       </div>
-
-      {isMenuOpen && (
-        <div className="md:hidden bg-blue-800">
-          <div className="px-2 pt-2 pb-3 space-y-1">
-            <Link
-              to="/blog"
-              className="block px-3 py-2 text-white hover:bg-blue-700 rounded-md"
-            >
-              Blog
-            </Link>
-            <Link
-              to="/support"
-              className="block px-3 py-2 text-white hover:bg-blue-700 rounded-md"
-            >
-              Support
-            </Link>
-            <Link
-              to="/about"
-              className="block px-3 py-2 text-white hover:bg-blue-700 rounded-md"
-            >
-              About
-            </Link>
-            <Link
-              to="/login"
-              className="block px-3 py-2 text-white hover:bg-blue-700 rounded-md"
-            >
-              Login
-            </Link>
-          </div>
-        </div>
-      )}
     </nav>
   );
 };
