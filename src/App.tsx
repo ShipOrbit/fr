@@ -1,23 +1,21 @@
 import { createBrowserRouter, RouterProvider } from "react-router";
 import SignIn from "./components/signin";
 import HomePage from "./pages";
-import AboutPage from "./pages/about";
-import ShipmentFinalizing from "./pages/shippers/create-shipment/shipment-finalizing";
-import CreateShipmentAppointment from "./pages/shippers/create-shipment/create-shipment-appointment";
-import SelectDatePage from "./pages/shippers/create-shipment/select-shipment-dates";
-import ShipperDashboard from "./pages/shippers/dashboard";
-import ShipmentDetails from "./pages/shippers/shipment-details";
-import SignUpStep1 from "./pages/shippers/sign-up";
-import SignUpStep3 from "./pages/shippers/sign-up/email-verification";
-import SignUpStep2 from "./pages/shippers/sign-up/shipping-needs";
-import SupportLanding from "./pages/support";
-import VerifyEmail from "./pages/verify-email";
-import { AuthProvider } from "./providers/auth";
+import BillingPage from "./pages/billing";
+import CheckoutPage from "./pages/checkout";
+import CreateShipmentAppointment from "./pages/create-shipment/create-shipment-appointment";
+import SelectDatePage from "./pages/create-shipment/select-shipment-dates";
+import ShipmentFinalizing from "./pages/create-shipment/shipment-finalizing";
+import ShipperDashboard from "./pages/dashboard/dashboard";
+import NotYetPage from "./pages/not-yet";
 import ResetPassword from "./pages/reset-password";
 import ConfirmResetPassword from "./pages/reset-password/confirm";
-import BillingPage from "./pages/shippers/billing";
-import NotYetPage from "./pages/not-yet";
-import CheckoutPage from "./pages/checkout";
+import ShipmentDetails from "./pages/shipment-details";
+import SignUpStep1 from "./pages/sign-up";
+import SignUpStep3 from "./pages/sign-up/email-verification";
+import SignUpStep2 from "./pages/sign-up/shipping-needs";
+import VerifyEmail from "./pages/verify-email";
+import { AuthProvider } from "./providers/auth";
 
 const router = createBrowserRouter([
   {
@@ -79,14 +77,6 @@ const router = createBrowserRouter([
   {
     path: "/shipments/:id/checkout",
     element: <CheckoutPage />,
-  },
-  {
-    path: "/support",
-    element: <SupportLanding />,
-  },
-  {
-    path: "/about",
-    element: <AboutPage />,
   },
   {
     path: "/*",
