@@ -74,43 +74,6 @@ const Header: React.FC = () => {
                 {/* Dropdown menu would be implemented with state management */}
                 {dropdown && (
                   <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg py-1 z-50">
-                    <Link
-                      to="/insight"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      Insight
-                    </Link>
-                    <Link
-                      to="/download"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      Download Shipments
-                    </Link>
-                    <Link
-                      to="/faq"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      View FAQs
-                    </Link>
-                    <Link
-                      to="/terms"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      View Terms
-                    </Link>
-                    <Link
-                      to="/settings"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      Settings
-                    </Link>
-                    <Link
-                      to="/contact"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      Contact us
-                    </Link>
-                    <hr className="my-1" />
                     <button
                       onClick={() => {
                         logout();
