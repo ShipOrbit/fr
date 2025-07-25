@@ -49,7 +49,7 @@ export const LocationSearchInput = memo(
         } else {
           setCities([]);
         }
-      }, 2000);
+      }, 1000);
 
       return () => clearTimeout(debounceTimer);
     }, [value, getCities]);
