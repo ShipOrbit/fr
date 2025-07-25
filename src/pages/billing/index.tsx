@@ -1,8 +1,8 @@
 import { Calendar, DollarSign, FileText, Loader2 } from "lucide-react";
-import InvoicesTable from "../../../components/invoices-table";
-import { useFetch } from "../../../hooks/use-fetch";
-import { paymentApi } from "../../../services/api/payment";
-import formatCurrency from "../../../utils/format-currency";
+import InvoicesTable from "../../components/invoices-table";
+import { useFetch } from "../../hooks/use-fetch";
+import { paymentApi } from "../../services/api/payment";
+import formatCurrency from "../../utils/format-currency";
 import Layout from "../components/layout";
 import { useMemo } from "react";
 

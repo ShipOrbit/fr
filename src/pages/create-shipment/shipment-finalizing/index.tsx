@@ -3,9 +3,9 @@ import { Loader2, MapPin, Package } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router";
-import { shipperApi } from "../../../../services/api/shipper";
-import type { Shipment } from "../../../../types";
-import normalizeDefaultValue from "../../../../utils/normalize-default-value";
+import { shipperApi } from "../../../services/api/shipper";
+import type { Shipment } from "../../../types";
+import normalizeDefaultValue from "../../../utils/normalize-default-value";
 import Layout from "../../components/layout";
 import { shipmentSchema, type ShipmentFormValues } from "./schema";
 

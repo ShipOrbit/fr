@@ -8,7 +8,7 @@ import {
   X,
 } from "lucide-react";
 import React, { useEffect, useState, type PropsWithChildren } from "react";
-import Header from "../components/header";
+import Header from "../../components/header";
 import { shipperApi } from "../../../services/api/shipper";
 import type { Facility, Shipment } from "../../../types";
 import { Link, useParams } from "react-router";

@@ -5,11 +5,11 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
-import Layout from "../../../components/layout";
-import { useAuth } from "../../../hooks/use-auth";
-import { handleApiError } from "../../../services/api/auth";
-import { shipperApi } from "../../../services/api/shipper";
-import type { GeoDBRegion } from "../../../types";
+import Layout from "../../components/layout";
+import { useAuth } from "../../hooks/use-auth";
+import { handleApiError } from "../../services/api/auth";
+import { shipperApi } from "../../services/api/shipper";
+import type { GeoDBRegion } from "../../types";
 import { shippingNeedsSchema } from "./schema";
 
 type ShippingNeedsFormData = z.infer<typeof shippingNeedsSchema>;

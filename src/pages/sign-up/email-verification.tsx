@@ -1,8 +1,8 @@
 import { CheckCircle, Loader2, Mail, RefreshCw } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { useAuth } from "../../../hooks/use-auth";
-import Layout from "../../../components/layout";
-import { authApi } from "../../../services/api/auth";
+import { useAuth } from "../../hooks/use-auth";
+import Layout from "../../components/layout";
+import { authApi } from "../../services/api/auth";
 import { useNavigate } from "react-router";
 
 const EmailVerification: React.FC = () => {

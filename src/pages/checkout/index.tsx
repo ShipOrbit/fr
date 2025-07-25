@@ -14,7 +14,7 @@ import StripeProvider from "../../providers/stripe-provider";
 import { paymentApi } from "../../services/api/payment";
 import { shipperApi } from "../../services/api/shipper";
 import type { Shipment } from "../../types";
-import Layout from "../shippers/components/layout";
+import Layout from "../components/layout";
 
 type CheckoutFormProps = {
   shipment: Shipment;

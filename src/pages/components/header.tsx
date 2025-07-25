@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { ChevronDown, Menu } from "lucide-react";
-import { useAuth } from "../../../hooks/use-auth";
+import { useAuth } from "../../hooks/use-auth";
 import { Link, useLocation, useNavigate } from "react-router";
-import { cn } from "../../../utils/cn";
+import { cn } from "../../utils/cn";
 
 const Header: React.FC = () => {
   const { user, logout } = useAuth();

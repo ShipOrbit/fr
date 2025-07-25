@@ -9,7 +9,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { LocationSearchInput } from "../../../components/location-search-input";
 import { shipperApi } from "../../../services/api/shipper";
 import type { GeoDBCity, PriceCalculation } from "../../../types";
-import Layout from "../components/layout";
+import Layout from "../../components/layout";
 import { cn } from "../../../utils/cn";
 import z from "zod";
 import { useForm } from "react-hook-form";

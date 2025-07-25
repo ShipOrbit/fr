@@ -15,9 +15,9 @@ import {
   Loader2,
   Package,
 } from "lucide-react";
-import { useAuth } from "../../../hooks/use-auth";
-import { authApi, handleApiError } from "../../../services/api/auth";
-import Layout from "../../../components/layout";
+import { useAuth } from "../../hooks/use-auth";
+import { authApi, handleApiError } from "../../services/api/auth";
+import Layout from "../../components/layout";
 import { signUpSchema } from "./schema";
 
 const countries = getData();

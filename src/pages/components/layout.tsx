@@ -1,7 +1,7 @@
 import { Loader2 } from "lucide-react";
 import React from "react";
 import { Navigate } from "react-router";
-import { useAuth } from "../../../hooks/use-auth";
+import { useAuth } from "../../hooks/use-auth";
 import Header from "./header";
 
 interface LayoutProps {
