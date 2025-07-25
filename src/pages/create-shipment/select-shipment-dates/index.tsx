@@ -15,11 +15,16 @@ import type { GeoDBCity, PriceCalculation } from "../../../types";
 import { cn } from "../../../utils/cn";
 import Layout from "../../components/layout";
 import { type ShipmentFormValues, shipmentSchema } from "./schema";
+import toast from "react-hot-toast";
+import { handleApiError } from "../../../services/api/auth";
+import { AxiosError } from "axios";
+import Button from "../../../components/button";
 
 const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 const SelectDatePage: React.FC = () => {
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [equipment] = useState("dryVan");
   const [pickupLocation, setPickupLocation] = useState<GeoDBCity>();
   const [dropoffLocation, setDropoffLocation] = useState<GeoDBCity>();
@@ -35,6 +40,7 @@ const SelectDatePage: React.FC = () => {
     register,
     watch,
     clearErrors,
+    setError,
     formState: { errors },
   } = useForm<ShipmentFormValues>({
     resolver: zodResolver(shipmentSchema),
@@ -45,6 +51,7 @@ const SelectDatePage: React.FC = () => {
       pickup_date: "",
       dropoff_date: "",
     },
+    disabled: isSubmitting,
   });
   const onPickLocationSelect = useCallback(
     (city: GeoDBCity) => {
@@ -66,6 +73,7 @@ const SelectDatePage: React.FC = () => {
 
   const onSubmit = async (data: ShipmentFormValues) => {
     try {
+      setIsSubmitting(true);
       const shipment = await shipperApi.createShipment({
         equipment: data.equipment,
         pickup: { city: data.pickup_location, date: data.pickup_date },
@@ -73,7 +81,25 @@ const SelectDatePage: React.FC = () => {
       });
       navigate(`/shipments/${shipment.id}/appointment`);
     } catch (error) {
-      console.log({ error });
+      if (error instanceof AxiosError) {
+        const apiError = handleApiError(error);
+        if (apiError.errors) {
+          Object.entries(apiError.errors).forEach(([field, message]) => {
+            setError(field as keyof ShipmentFormValues, {
+              type: "server",
+              message: message as unknown as string,
+            });
+          });
+        } else {
+          toast.error(apiError.message);
+        }
+      } else if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Something Went Wrong, Try Again Later.");
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -362,13 +388,10 @@ const SelectDatePage: React.FC = () => {
                         : "$--"}
                     </p>
                   </div>
-                  <button
-                    type="submit"
-                    className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors ml-auto"
-                  >
+                  <Button type="submit" loading={isSubmitting}>
                     <span>Review shipment</span>
                     <ArrowRight className="h-4 w-4" />
-                  </button>
+                  </Button>
                 </div>
               </div>
             </form>
