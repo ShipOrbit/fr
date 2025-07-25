@@ -31,46 +31,12 @@ const ShipOrbitLanding = () => {
               <img
                 src="https://plus.unsplash.com/premium_photo-1683120796013-f2f18451a907?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 alt="Modern logistics and shipping"
-                className="w-full h-96 object-cover"
+                className="w-full h-[30rem] object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-blue-900/20 to-transparent"></div>
             </div>
-            <div className="absolute -top-4 -right-4 bg-white rounded-md p-4">
+            <div className="absolute -top-4 -right-4 bg-white rounded-full p-4">
               <Package className="h-8 w-8 text-blue-600" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-
-  const SafetySection = () => (
-    <section className="py-16 bg-gradient-to-r from-gray-900 to-gray-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-gray-800 rounded-3xl p-8 lg:p-12">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="text-white">
-              <h2 className="text-4xl font-bold mb-6">
-                Safety & Security First
-              </h2>
-              <p className="text-gray-300 text-lg mb-8 leading-relaxed">
-                In an ever-changing world, we prioritize the safety and security
-                of everyone in our network. Our advanced monitoring systems
-                ensure peace of mind for all stakeholders.
-              </p>
-              <Link
-                to="/safety"
-                className="bg-white text-gray-900 px-8 py-3 rounded-md hover:bg-gray-100 transition-colors font-medium cursor-pointer"
-              >
-                Learn More
-              </Link>
-            </div>
-            <div className="relative">
-              <img
-                src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                alt="Safety and security in logistics"
-                className="rounded-2xl"
-              />
             </div>
           </div>
         </div>
@@ -139,7 +105,7 @@ const ShipOrbitLanding = () => {
   const AwardsSection = () => (
     <section className="py-16 bg-gradient-to-br from-gray-50 to-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-3xl p-8 lg:p-12">
+        <div className="rounded-3xl p-8 lg:p-12">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
               Industry Recognition
@@ -180,15 +146,6 @@ const ShipOrbitLanding = () => {
                 partnerships.
               </p>
             </div>
-          </div>
-
-          <div className="text-center mt-8">
-            <a
-              href="#awards"
-              className="text-blue-600 hover:text-blue-700 font-medium underline"
-            >
-              Read more about our achievements
-            </a>
           </div>
         </div>
       </div>
@@ -260,7 +217,6 @@ const ShipOrbitLanding = () => {
   return (
     <Layout>
       <HeroSection />
-      <SafetySection />
       <MainContentSection />
       <AwardsSection />
       <TestimonialSection />
