@@ -1,4 +1,10 @@
-import { useState, useEffect, useCallback } from "react";
+import {
+  useState,
+  useEffect,
+  useCallback,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 import { handleApiError } from "../services/api/auth";
 import { AxiosError } from "axios";
 
@@ -6,6 +12,7 @@ type Status = "idle" | "loading" | "success" | "error";
 
 interface UseFetchResult<T> {
   data: T | null;
+  setData: Dispatch<SetStateAction<T | null>>;
   error: string | null;
   loading: boolean;
   refetch: () => void;
@@ -45,5 +52,5 @@ export function useFetch<T>(fn: () => Promise<T>): UseFetchResult<T> {
 
   const refetch = () => setTrigger((prev) => prev + 1);
 
-  return { data, error, loading, refetch, status };
+  return { data, setData, error, loading, refetch, status };
 }
