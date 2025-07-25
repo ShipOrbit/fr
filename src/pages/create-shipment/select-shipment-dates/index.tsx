@@ -388,7 +388,11 @@ const SelectDatePage: React.FC = () => {
                         : "$--"}
                     </p>
                   </div>
-                  <Button type="submit" loading={isSubmitting}>
+                  <Button
+                    className="ml-auto"
+                    type="submit"
+                    loading={isSubmitting}
+                  >
                     <span>Review shipment</span>
                     <ArrowRight className="h-4 w-4" />
                   </Button>
