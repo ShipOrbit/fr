@@ -19,7 +19,10 @@ interface UseFetchResult<T> {
   status: Status;
 }
 
-export function useFetch<T>(fn: () => Promise<T>): UseFetchResult<T> {
+export function useFetch<T>(
+  fn: () => Promise<T | null>,
+  deps: React.DependencyList = []
+): UseFetchResult<T> {
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -44,7 +47,7 @@ export function useFetch<T>(fn: () => Promise<T>): UseFetchResult<T> {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, deps);
 
   useEffect(() => {
     fetchData();
