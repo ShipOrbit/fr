@@ -1,228 +1,269 @@
-import { ArrowRight, Clock, Package, Shield, Star } from "lucide-react";
+import {
+  ArrowRight,
+  Package,
+  Truck,
+  Zap,
+  Star,
+  Shield,
+  Clock,
+} from "lucide-react";
+import { useState } from "react";
+import { LocationSearchInput } from "../components/location-search-input";
+import { useFetch } from "../hooks/use-fetch";
+import { shipperApi } from "../services/api/shipper";
+import type { GeoDBCity } from "../types";
 import { Link } from "react-router";
-import Layout from "../components/layout";
 
-const ShipOrbitLanding = () => {
-  const HeroSection = () => (
-    <section className="min-h-screen flex items-center">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="text-left">
-            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-              Revolutionizing
-              <span className="text-blue-600"> Global Logistics</span>
-            </h1>
-            <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-              Experience the future of freight with our intelligent platform
-              connecting shippers and carriers worldwide.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link
-                to="/sign-up"
-                className="bg-blue-600 text-white px-8 py-4 rounded-md hover:bg-blue-700 transition-all transform hover:scale-105 flex items-center justify-center group cursor-pointer"
-              >
-                Ship with OrbitLogistics
-                <ArrowRight className="ml-2 h-5 w-5 group-hover:tra-blue-x-1 transition-transform" />
-              </Link>
-            </div>
-          </div>
-          <div className="relative">
-            <div className="relative rounded-2xl overflow-hidden">
-              <img
-                src="https://plus.unsplash.com/premium_photo-1683120796013-f2f18451a907?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                alt="Modern logistics and shipping"
-                className="w-full h-[30rem] object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-blue-900/20 to-transparent"></div>
-            </div>
-            <div className="absolute -top-4 -right-4 bg-white rounded-full p-4">
-              <Package className="h-8 w-8 text-blue-600" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+const ShippingLandingPage = () => {
+  const [pickupLocation, setPickupLocation] = useState<GeoDBCity>();
+  const [dropoffLocation, setDropoffLocation] = useState<GeoDBCity>();
+  const [equipment] = useState("dryVan");
+  const { data: distancePrice } = useFetch(
+    async () =>
+      pickupLocation && dropoffLocation
+        ? shipperApi.getDistancePrice({
+            pickup_location: pickupLocation,
+            dropoff_location: dropoffLocation,
+            equipment,
+          })
+        : null,
+    [pickupLocation, dropoffLocation, equipment]
   );
 
-  const MainContentSection = () => (
-    <section className="py-16 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-6">
-            When logistics runs smoother, business thrives globally
-          </h2>
-        </div>
+  const getCities = (search: string) =>
+    shipperApi.searchCities({ name_prefix: search });
 
-        <div className="mb-16 rounded-3xl overflow-hidden">
-          <img
-            src="https://images.unsplash.com/photo-1494412651409-8963ce7935a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
-            alt="Global logistics network"
-            className="w-full h-96 object-cover"
-          />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-          <div className="text-center p-8 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl">
-            <div className="bg-blue-600 rounded-md p-4 w-20 h-20 mx-auto mb-6 flex items-center justify-center">
-              <Clock className="h-10 w-10 text-white" />
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">
-              Lightning Fast
-            </h3>
-            <p className="text-gray-600">
-              Real-time matching and instant quotes
-            </p>
-          </div>
-
-          <div className="text-center p-8 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl">
-            <div className="bg-green-600 rounded-md p-4 w-20 h-20 mx-auto mb-6 flex items-center justify-center">
-              <Shield className="h-10 w-10 text-white" />
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">
-              Ultra Reliable
-            </h3>
-            <p className="text-gray-600">
-              99.9% uptime with advanced monitoring
-            </p>
-          </div>
-
-          <div className="text-center p-8 bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl">
-            <div className="bg-purple-600 rounded-md p-4 w-20 h-20 mx-auto mb-6 flex items-center justify-center">
-              <Star className="h-10 w-10 text-white" />
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">
-              Always On Time
-            </h3>
-            <p className="text-gray-600">
-              Precision delivery tracking and updates
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-
-  const AwardsSection = () => (
-    <section className="py-16 bg-gradient-to-br from-gray-50 to-gray-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-3xl p-8 lg:p-12">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Industry Recognition
-            </h2>
-            <p className="text-gray-600 text-lg">
-              ShipOrbit leads the industry in innovation, reliability, and
-              customer satisfaction.*
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="text-center p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl">
-              <img
-                src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                alt="Innovation Award"
-                className="w-full h-48 object-cover rounded-xl mb-4"
-              />
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
-                Innovation Excellence
-              </h3>
-              <p className="text-gray-600">
-                Leading the digital transformation in logistics technology and
-                automation.
-              </p>
-            </div>
-
-            <div className="text-center p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl">
-              <img
-                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                alt="Customer Satisfaction"
-                className="w-full h-48 object-cover rounded-xl mb-4"
-              />
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
-                Customer Excellence
-              </h3>
-              <p className="text-gray-600">
-                Consistently delivering exceptional service and building lasting
-                partnerships.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-
-  const TestimonialSection = () => (
-    <section className="py-16 bg-gradient-to-r from-blue-600 to-blue-800 relative overflow-hidden">
-      <div className="absolute inset-0 bg-black/20"></div>
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80')`,
-        }}
-      ></div>
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-start max-w-2xl">
-          <h2 className="text-4xl font-bold text-white mb-6">
-            "Instant access to global shipping capacity"
-          </h2>
-          <p className="text-xl text-white/90 mb-8 leading-relaxed">
-            Our platform empowers businesses with the confidence and capability
-            to move freight efficiently across any distance.
-          </p>
-          <Link
-            to="/sign-up"
-            className="bg-white text-blue-600 px-8 py-3 rounded-md hover:bg-gray-100 transition-colors font-medium flex items-center group cursor-pointer"
-          >
-            Get Started Today
-            <ArrowRight className="ml-2 h-5 w-5 group-hover:tra-blue-x-1 transition-transform" />
-          </Link>
-        </div>
-      </div>
-    </section>
-  );
-
-  const SignUpSection = () => (
-    <section className="py-16 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="flex flex-col items-start">
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">
-              Join thousands of satisfied customers
-            </h2>
-            <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-              Start managing your logistics operations with confidence.
-              Available 24/7 for your scheduling needs.
-            </p>
-            <Link
-              to="/sign-up"
-              className="bg-blue-600 text-white px-8 py-4 rounded-md hover:bg-blue-700 transition-all transform hover:scale-105 flex items-center group cursor-pointer"
-            >
-              Start Shipping Now
-              <ArrowRight className="ml-2 h-5 w-5 group-hover:tra-blue-x-1 transition-transform" />
-            </Link>
-          </div>
-          <div className="relative">
-            <img
-              src="https://images.unsplash.com/photo-1556761175-b413da4baf72?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-              alt="Sign up and get started"
-              className="rounded-2xl"
-            />
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+  const onPickLocationSelect = (city: GeoDBCity) => {
+    setPickupLocation(city);
+  };
+  const onDropoffLocationSelect = (city: GeoDBCity) => {
+    setDropoffLocation(city);
+  };
 
   return (
-    <Layout>
-      <HeroSection />
-      <MainContentSection />
-      <AwardsSection />
-      <TestimonialSection />
-      <SignUpSection />
-    </Layout>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 relative overflow-hidden">
+      {/* Enhanced Background Pattern */}
+      <div className="absolute inset-0 opacity-3">
+        <div className="absolute top-20 left-10 w-40 h-40 bg-blue-400 rounded-full blur-3xl animate-pulse"></div>
+        <div
+          className="absolute top-60 right-20 w-32 h-32 bg-indigo-400 rounded-full blur-3xl animate-pulse"
+          style={{ animationDelay: "2s" }}
+        ></div>
+        <div
+          className="absolute bottom-40 left-1/4 w-48 h-48 bg-cyan-300 rounded-full blur-3xl animate-pulse"
+          style={{ animationDelay: "1s" }}
+        ></div>
+        <div
+          className="absolute bottom-20 right-1/3 w-36 h-36 bg-blue-300 rounded-full blur-3xl animate-pulse"
+          style={{ animationDelay: "3s" }}
+        ></div>
+      </div>
+
+      {/* Premium Grid Pattern */}
+      <div className="absolute inset-0 opacity-5">
+        <div
+          className="h-full w-full"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3e%3cg fill='none' fill-rule='evenodd'%3e%3cg fill='%234F46E5' fill-opacity='1'%3e%3ccircle cx='7' cy='7' r='1'/%3e%3c/g%3e%3c/g%3e%3c/svg%3e")`,
+          }}
+        ></div>
+      </div>
+
+      {/* Floating Elements */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 animate-float">
+          <div className="bg-white/20 backdrop-blur-sm rounded-full p-3 shadow-lg">
+            <Package className="w-6 h-6 text-blue-500" />
+          </div>
+        </div>
+        <div
+          className="absolute top-1/3 right-1/4 animate-float"
+          style={{ animationDelay: "2s" }}
+        >
+          <div className="bg-white/20 backdrop-blur-sm rounded-full p-3 shadow-lg">
+            <Truck className="w-7 h-7 text-indigo-500" />
+          </div>
+        </div>
+        <div
+          className="absolute bottom-1/3 left-1/5 animate-float"
+          style={{ animationDelay: "1s" }}
+        >
+          <div className="bg-white/20 backdrop-blur-sm rounded-full p-3 shadow-lg">
+            <Shield className="w-6 h-6 text-cyan-500" />
+          </div>
+        </div>
+      </div>
+
+      <div className="relative z-10 container mx-auto px-4 py-8">
+        {/* Premium Header */}
+        <header className="text-center mb-12 animate-fade-in">
+          <div className="flex items-center justify-center mb-8">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full blur-lg opacity-30"></div>
+              <div className="relative bg-gradient-to-r from-blue-600 to-indigo-600 p-4 rounded-full shadow-xl">
+                <Package className="w-10 h-10 text-white" />
+              </div>
+            </div>
+            <div className="ml-4">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
+                ShipOrbit
+              </h1>
+              <div className="flex items-center mt-1">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className="w-3 h-3 text-yellow-400 fill-current"
+                  />
+                ))}
+                <span className="text-xs text-gray-500 ml-2">
+                  Trusted by 10k+ shippers
+                </span>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* Enhanced Hero Section */}
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left Column - Content */}
+            <div className="space-y-8">
+              {/* Premium Title Section */}
+              <div className="space-y-6">
+                <div className="inline-flex items-center px-4 py-2 bg-white/60 backdrop-blur-sm rounded-full border border-blue-100 shadow-sm">
+                  <Zap className="w-4 h-4 text-blue-600 mr-2" />
+                  <span className="text-sm font-medium text-blue-700">
+                    Fastest Shipping Platform
+                  </span>
+                </div>
+
+                <h2 className="text-5xl lg:text-6xl font-bold leading-tight">
+                  <span className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700 bg-clip-text text-transparent">
+                    Ship Smarter,
+                  </span>
+                  <br />
+                  <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                    Save More
+                  </span>
+                </h2>
+
+                <p className="text-xl text-gray-600 leading-relaxed max-w-lg">
+                  Get instant quotes, track shipments in real-time, and connect
+                  with verified carriers. Experience premium logistics made
+                  simple.
+                </p>
+
+                {/* Trust Indicators */}
+                <div className="flex items-center space-x-6 text-sm text-gray-500">
+                  <div className="flex items-center">
+                    <Clock className="w-4 h-4 mr-1 text-green-500" />
+                    <span>5 min setup</span>
+                  </div>
+                  <div className="flex items-center">
+                    <Shield className="w-4 h-4 mr-1 text-blue-500" />
+                    <span>Fully insured</span>
+                  </div>
+                  <div className="flex items-center">
+                    <Star className="w-4 h-4 mr-1 text-yellow-500" />
+                    <span>4.9/5 rating</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quote Calculator */}
+              <div className="bg-white/70 backdrop-blur-xl rounded-3xl border border-white/40 p-8 shadow-2xl">
+                {/* Dynamic Price Display */}
+                <div className="text-center mb-8">
+                  <div className="text-4xl md:text-5xl font-bold text-gray-800 mb-2">
+                    {distancePrice
+                      ? `$${distancePrice.base_price.toLocaleString()}`
+                      : "Get Quote"}
+                  </div>
+                  <p className="text-lg text-gray-600 mb-3">
+                    Instant Shipping Estimate
+                  </p>
+                  {distancePrice && (
+                    <div className="flex items-center justify-center text-green-600 animate-fade-in">
+                      <Zap className="w-4 h-4 mr-1" />
+                      <span className="text-sm font-medium">Live pricing</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Location Inputs */}
+                <div className="space-y-4 mb-6">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Ship From
+                    </label>
+                    <LocationSearchInput
+                      placeholder="Enter pickup city"
+                      onSelect={onPickLocationSelect}
+                      getCities={getCities}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Ship To
+                    </label>
+                    <LocationSearchInput
+                      placeholder="Enter delivery city"
+                      onSelect={onDropoffLocationSelect}
+                      getCities={getCities}
+                    />
+                  </div>
+                </div>
+
+                {/* CTA Button */}
+                <Link to="/login">
+                  <button className="group relative w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-4 rounded-2xl font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:scale-[1.02] transition-all duration-300 overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-700 to-indigo-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <span className="relative flex items-center justify-center">
+                      Get Started - It's Free
+                      <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
+                    </span>
+                  </button>
+                </Link>
+              </div>
+            </div>
+
+            {/* Right Column - Premium Image */}
+            <div className="relative lg:block hidden">
+              <div className="relative">
+                {/* Image Container with Premium Effects */}
+                <div className="relative overflow-hidden rounded-3xl shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-700">
+                  {/* Premium shipping image */}
+                  <div className="aspect-[4/5]">
+                    <img
+                      src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+                      alt="Modern shipping containers and logistics"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+
+                {/* Floating Stats Cards */}
+                <div className="absolute -top-4 -left-4 bg-white/90 backdrop-blur-sm rounded-2xl p-4 shadow-xl border border-white/40">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-blue-600">24/7</div>
+                    <div className="text-xs text-gray-600">Support</div>
+                  </div>
+                </div>
+
+                <div className="absolute -bottom-4 -right-4 bg-white/90 backdrop-blur-sm rounded-2xl p-4 shadow-xl border border-white/40">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-green-600">98%</div>
+                    <div className="text-xs text-gray-600">On-time</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
-export default ShipOrbitLanding;
+export default ShippingLandingPage;
