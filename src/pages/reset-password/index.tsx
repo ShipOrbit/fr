@@ -62,7 +62,7 @@ const ResetPassword: React.FC = () => {
 
   return (
     <Layout>
-      <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8">
           <div className="text-center">
             <div className="flex justify-center">
@@ -73,7 +73,7 @@ const ResetPassword: React.FC = () => {
             </h2>
           </div>
 
-          <div className="bg-white py-8 px-6 shadow-lg rounded-lg">
+          <div className="bg-white/70 backdrop-blur-xl rounded-3xl border border-white/40 p-8 shadow-2xl">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               {generalError && (
                 <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
