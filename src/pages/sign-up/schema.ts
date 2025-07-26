@@ -11,10 +11,7 @@ export const signUpSchema = z.object({
   phone_number: z
     .string()
     .min(1, "Phone number is required")
-    .regex(
-      /^\(?(\d{3})\)?[-.\s]?(\d{3})[-.\s]?(\d{4})$/,
-      "Please enter a valid phone number"
-    ),
+    .regex(/^\+?[1-9]\d{8,14}$/, "Please enter a valid phone number"),
   password: z
     .string()
     .min(8, "Password must be at least 8 characters")

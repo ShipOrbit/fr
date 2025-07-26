@@ -10,7 +10,11 @@ export const facilitySchema = z.object({
     "to_be_scheduled",
   ]),
   contact_name: z.string().min(1, "Contact name is required"),
-  phone_number: z.string().min(7, "Invalid phone number"),
+  phone_number: z
+    .string()
+    .min(1, "Phone number is required")
+    .regex(/^\+?[1-9]\d{8,14}$/, "Please enter a valid phone number"),
+
   email: z.string().email("Invalid email address"),
 });
 
