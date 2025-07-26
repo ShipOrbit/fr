@@ -39,6 +39,7 @@ const FacilityForm = ({
       phone_number: shipment[type].phone_number,
     },
     disabled: loading,
+    reValidateMode: "onChange",
   });
 
   const onSubmit: React.FormEventHandler<HTMLFormElement> = handleSubmit(
@@ -211,7 +212,7 @@ const FacilityForm = ({
                 type="tel"
                 {...register("phone_number")}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="(555) 123-4567"
+                placeholder="+12345678"
               />
               {errors.phone_number && (
                 <p className="text-sm text-red-500">

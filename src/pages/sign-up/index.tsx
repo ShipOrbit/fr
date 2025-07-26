@@ -45,6 +45,7 @@ const SignUpStep1: React.FC = () => {
       company_name: "",
       primary_ships_country: "US",
     },
+    reValidateMode: "onChange",
   });
 
   const onSubmit = async (data: SignUpFormData) => {
@@ -232,7 +233,7 @@ const SignUpStep1: React.FC = () => {
                             ? "border-red-300"
                             : "border-gray-300"
                         } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
-                        placeholder="+1 (555) 123-4567"
+                        placeholder="+123456789"
                       />
                     </div>
                     {errors.phone_number && (
