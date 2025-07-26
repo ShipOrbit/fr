@@ -4,7 +4,7 @@ import CreateShipmentAppointment from "../../../components/create-shipment-apoin
 import Loader from "../../../components/loader";
 import { useFetch } from "../../../hooks/use-fetch";
 import { shipperApi } from "../../../services/api/shipper";
-import Layout from "../../components/layout";
+import Layout from "../../../components/layout/app-layout";
 
 const CreateShipmentAppointmentPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();

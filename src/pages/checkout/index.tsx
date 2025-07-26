@@ -4,7 +4,7 @@ import { Link, Navigate, useParams } from "react-router";
 import { useFetch } from "../../hooks/use-fetch";
 import StripeProvider from "../../providers/stripe-provider";
 import { shipperApi } from "../../services/api/shipper";
-import Layout from "../components/layout";
+import Layout from "../../components/layout/app-layout";
 import CheckoutForm from "../../components/checkout-form";
 
 const CheckoutPage = () => {

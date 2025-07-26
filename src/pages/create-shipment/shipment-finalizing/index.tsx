@@ -3,7 +3,7 @@ import { Navigate, useParams } from "react-router";
 import ShipmentFinalizeForm from "../../../components/finalize-shipment-form";
 import { useFetch } from "../../../hooks/use-fetch";
 import { shipperApi } from "../../../services/api/shipper";
-import Layout from "../../components/layout";
+import Layout from "../../../components/layout/app-layout";
 import Loader from "../../../components/loader";
 
 const ShipmentFinalizing: React.FC = () => {

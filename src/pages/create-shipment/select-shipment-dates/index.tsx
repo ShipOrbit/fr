@@ -13,7 +13,7 @@ import { LocationSearchInput } from "../../../components/location-search-input";
 import { shipperApi } from "../../../services/api/shipper";
 import type { GeoDBCity, PriceCalculation } from "../../../types";
 import { cn } from "../../../utils/cn";
-import Layout from "../../components/layout";
+import Layout from "../../../components/layout/app-layout";
 import { type ShipmentFormValues, shipmentSchema } from "./schema";
 import toast from "react-hot-toast";
 import { handleApiError } from "../../../services/api/auth";
@@ -226,7 +226,6 @@ const SelectDatePage: React.FC = () => {
                     Pick-up location
                   </label>
                   <LocationSearchInput
-                    label="Pick-up location"
                     placeholder="City, State"
                     onSelect={onPickLocationSelect}
                     getCities={getCities}
@@ -243,7 +242,6 @@ const SelectDatePage: React.FC = () => {
                     Drop-off location
                   </label>
                   <LocationSearchInput
-                    label="Drop-off location"
                     placeholder="City, State"
                     onSelect={onDropoffLocationSelect}
                     getCities={getCities}
@@ -280,8 +278,6 @@ const SelectDatePage: React.FC = () => {
                   <input
                     type="date"
                     disabled
-                    // value={dropoffDate}
-                    // onChange={(e) => setDropoffDate(e.target.value)}
                     {...register("dropoff_date")}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                   />

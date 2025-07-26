@@ -3,7 +3,7 @@ import InvoicesTable from "../../components/invoices-table";
 import { useFetch } from "../../hooks/use-fetch";
 import { paymentApi } from "../../services/api/payment";
 import formatCurrency from "../../utils/format-currency";
-import Layout from "../components/layout";
+import Layout from "../../components/layout/app-layout";
 import { useMemo } from "react";
 
 const BillingPage = () => {

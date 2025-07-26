@@ -4,7 +4,7 @@ import { useAuth } from "../../hooks/use-auth";
 import { shipperApi } from "../../services/api/shipper";
 import type { Shipment } from "../../types";
 import { cn } from "../../utils/cn";
-import Layout from "../components/layout";
+import Layout from "../../components/layout/app-layout";
 import ShipmentCard from "../../components/shipment-card";
 import getGreeting from "../../utils/get-greeting";
 
