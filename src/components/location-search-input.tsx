@@ -13,11 +13,16 @@ type LocationSearchInputProps = {
   onSelect: (city: GeoDBCity) => void;
   getCities: (search: string) => Promise<GeoDBCity[]>;
   errors?: string;
-  label?: string;
 } & Omit<InputHTMLAttributes<HTMLInputElement>, "onSelect">;
 
 export const LocationSearchInput = memo(
-  ({ onSelect, getCities, errors, ...props }: LocationSearchInputProps) => {
+  ({
+    onSelect,
+    getCities,
+    errors,
+    className,
+    ...props
+  }: LocationSearchInputProps) => {
     const [value, setValue] = useState("");
     const [cities, setCities] = useState<GeoDBCity[]>([]);
     const [showDropdown, setShowDropdown] = useState(false);
@@ -52,7 +57,7 @@ export const LocationSearchInput = memo(
       }, 1000);
 
       return () => clearTimeout(debounceTimer);
-    }, [value, getCities]);
+    }, [value]);
 
     // Close dropdown if clicked outside
     useEffect(() => {
@@ -72,9 +77,6 @@ export const LocationSearchInput = memo(
 
     return (
       <div className="relative" ref={dropdownRef}>
-        {/* <label className="block text-sm font-medium text-gray-700 mb-2">
-        {label}
-      </label> */}
         <div className="relative">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <MapPin className="h-5 w-5 text-gray-400" />
@@ -89,7 +91,8 @@ export const LocationSearchInput = memo(
             onFocus={() => setShowDropdown(true)}
             className={cn(
               "block w-full pl-10 pr-10 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500",
-              errors ? "border-red-300" : "border-gray-300"
+              errors ? "border-red-300" : "border-gray-300",
+              className
             )}
             {...props}
           />
