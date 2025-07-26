@@ -3,7 +3,7 @@ import React from "react";
 import { Toaster } from "react-hot-toast";
 import { Navigate } from "react-router";
 import { useAuth } from "../../hooks/use-auth";
-import Header from "./header";
+import Header from "../header";
 
 interface LayoutProps {
   children: React.ReactNode;
