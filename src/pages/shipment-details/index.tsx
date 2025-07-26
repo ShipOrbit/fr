@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
 import { shipperApi } from "../../services/api/shipper";
 import type { Shipment } from "../../types";
-import Header from "../components/header";
+import Header from "../../components/header";
 
 const ShipmentDetails: React.FC = () => {
   const [shipment, setShipment] = useState<Shipment | null>(null);
