@@ -1,50 +1,100 @@
-import { Package } from "lucide-react";
-import { Link } from "react-router";
+import React, { useState } from "react";
+import { ChevronDown, Menu } from "lucide-react";
 import { useAuth } from "../hooks/use-auth";
+import { Link, useLocation, useNavigate } from "react-router";
+import { cn } from "../utils/cn";
 
-const Header = () => {
-  const auth = useAuth();
+const Header: React.FC = () => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [dropdown, setDropdown] = useState(false);
 
   return (
-    <nav className="bg-gradient-to-r from-blue-900 to-blue-800 shadow-lg sticky top-0 z-50">
+    <nav className="bg-white shadow-lg border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <Link to="/">
+          {/* Logo */}
+          <Link to="/dashboard">
             <div className="flex items-center">
-              <div className="flex-shrink-0 flex items-center">
-                <div className="bg-white rounded-full p-2 mr-3">
-                  <Package className="h-6 w-6 text-blue-600" />
-                </div>
-                <span className="text-white text-xl font-bold">ShipOrbit</span>
+              <div className="flex-shrink-0">
+                <span className="text-2xl font-bold text-blue-600">
+                  ShipOrbit
+                </span>
+                <span className="text-gray-500 ml-2">
+                  for {user?.company?.name}
+                </span>
               </div>
             </div>
           </Link>
 
-          {auth.isAuthenticated && auth.user?.is_email_verified ? (
-            <div className="flex items-center space-x-4">
+          {/* Desktop Navigation */}
+          <div className="hidden md:block">
+            <div className="ml-10 flex items-baseline space-x-8">
               <Link
                 to="/dashboard"
-                className="text-white hover:text-blue-200 transition-colors"
+                className={cn(
+                  "text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium",
+                  location.pathname.includes("dashboard") &&
+                    "text-blue-600 hover:text-blue-700 border-b-2 border-blue-600"
+                )}
               >
                 Dashboard
               </Link>
-            </div>
-          ) : (
-            <div className="flex items-center space-x-4">
               <Link
-                to="/login"
-                className="text-white hover:text-blue-200 transition-colors"
+                to="/create-shipment"
+                className={cn(
+                  "text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium",
+                  location.pathname.includes("create-shipment") &&
+                    "text-blue-600 hover:text-blue-700 border-b-2 border-blue-600"
+                )}
               >
-                Login
+                Create Shipment
               </Link>
               <Link
-                to="/sign-up"
-                className="bg-white text-blue-600 px-4 py-2 rounded-md hover:bg-blue-50 transition-colors font-medium cursor-pointer"
+                to="/billing"
+                className={cn(
+                  "text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium",
+                  location.pathname.includes("billing") &&
+                    "text-blue-600 hover:text-blue-700 border-b-2 border-blue-600"
+                )}
               >
-                Sign up
+                Billing
               </Link>
+
+              {/* User Dropdown */}
+              <div className="relative">
+                <button
+                  onClick={() => setDropdown((prev) => !prev)}
+                  className="flex items-center text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium"
+                >
+                  {user?.first_name}
+                  <ChevronDown className="ml-1 h-4 w-4" />
+                </button>
+                {/* Dropdown menu would be implemented with state management */}
+                {dropdown && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg py-1 z-50">
+                    <button
+                      onClick={() => {
+                        logout();
+                        navigate("/login");
+                      }}
+                      className="w-full cursor-pointer text-start px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
-          )}
+          </div>
+
+          {/* Mobile menu button */}
+          <div className="md:hidden">
+            <button className="text-gray-700 hover:text-blue-600 p-2">
+              <Menu className="h-6 w-6" />
+            </button>
+          </div>
         </div>
       </div>
     </nav>
