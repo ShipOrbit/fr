@@ -45,7 +45,7 @@ export default function InvoicesTable({ invoices }: { invoices: Invoice[] }) {
               {invoice.invoice_number}
             </td>
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              {formatDate(invoice.create_at)}
+              {formatDate(invoice.created_at)}
             </td>
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
               {formatCurrency(parseFloat(invoice.total_amount))}

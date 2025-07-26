@@ -184,7 +184,7 @@ export interface GetShipmentsResult {
 export interface Invoice {
   id: number;
   invoice_number: string;
-  create_at: string;
+  created_at: string;
   total_amount: string;
   status: "paid" | "pending" | "overdue";
   paid_at: string;
