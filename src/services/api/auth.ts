@@ -15,7 +15,7 @@ export const authApi = {
   // Register step 1
   registerStepOne: async (data: RegisterStepOneData) => {
     const response: AxiosResponse = await api.post(
-      "/auth/register/step-1/",
+      "/auth/register/",
       data
     );
     return response.data;
