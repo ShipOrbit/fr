@@ -1,18 +1,10 @@
-import {
-  ArrowRight,
-  Package,
-  Truck,
-  Zap,
-  Star,
-  Shield,
-  Clock,
-} from "lucide-react";
+import { ArrowRight, Clock, Package, Shield, Star, Zap } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router";
 import { LocationSearchInput } from "../components/location-search-input";
 import { useFetch } from "../hooks/use-fetch";
 import { shipperApi } from "../services/api/shipper";
 import type { GeoDBCity } from "../types";
-import { Link } from "react-router";
 
 const ShippingLandingPage = () => {
   const [pickupLocation, setPickupLocation] = useState<GeoDBCity>();
@@ -67,31 +59,6 @@ const ShippingLandingPage = () => {
             backgroundImage: `url("data:image/svg+xml,%3csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3e%3cg fill='none' fill-rule='evenodd'%3e%3cg fill='%234F46E5' fill-opacity='1'%3e%3ccircle cx='7' cy='7' r='1'/%3e%3c/g%3e%3c/g%3e%3c/svg%3e")`,
           }}
         ></div>
-      </div>
-
-      {/* Floating Elements */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 animate-float">
-          <div className="bg-white/20 backdrop-blur-sm rounded-full p-3 shadow-lg">
-            <Package className="w-6 h-6 text-blue-500" />
-          </div>
-        </div>
-        <div
-          className="absolute top-1/3 right-1/4 animate-float"
-          style={{ animationDelay: "2s" }}
-        >
-          <div className="bg-white/20 backdrop-blur-sm rounded-full p-3 shadow-lg">
-            <Truck className="w-7 h-7 text-indigo-500" />
-          </div>
-        </div>
-        <div
-          className="absolute bottom-1/3 left-1/5 animate-float"
-          style={{ animationDelay: "1s" }}
-        >
-          <div className="bg-white/20 backdrop-blur-sm rounded-full p-3 shadow-lg">
-            <Shield className="w-6 h-6 text-cyan-500" />
-          </div>
-        </div>
       </div>
 
       <div className="relative z-10 container mx-auto px-4 py-8">
